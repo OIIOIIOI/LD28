@@ -1,5 +1,7 @@
 package game;
 
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.Sprite;
 
 /**
@@ -40,6 +42,7 @@ class Entity {
 	var isSolid:Bool;
 	
 	// Graphic asset
+	public var spriteData:BitmapData;
 	public var sprite:Sprite;
 	
 	public function new (w:Int = 1, h:Int = 1) {
@@ -54,7 +57,14 @@ class Entity {
 		
 		isSolid = true;
 		
+		spriteData = new BitmapData(Level.GRID_SIZE * w, Level.GRID_SIZE * h, true, 0x00FF00FF);
+		
+		var b = new Bitmap(spriteData);
+		b.x = b.y = -Level.GRID_SIZE / 2;
+		
 		sprite = new Sprite();
+		sprite.addChild(b);
+		
 		draw();
 	}
 	
@@ -267,11 +277,8 @@ class Entity {
 		yr = (yy - cy * Level.GRID_SIZE) / Level.GRID_SIZE;
 	}
 	
-	function draw (c:UInt = 0xFF00FF) {
-		sprite.graphics.clear();
-		sprite.graphics.beginFill(c);
-		sprite.graphics.drawRect(-Level.GRID_SIZE / 2, -Level.GRID_SIZE / 2, Level.GRID_SIZE * w, Level.GRID_SIZE * h);
-		sprite.graphics.endFill();
+	function draw () {
+		spriteData.fillRect(spriteData.rect, 0xFFFF00FF);
 	}
 	
 	public function top () :Float {		return (cy + yr); }

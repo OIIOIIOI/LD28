@@ -5,7 +5,9 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Shape;
 import flash.display.Sprite;
+import flash.errors.Error;
 import flash.events.MouseEvent;
+import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
 import flash.text.TextFormat;
@@ -23,6 +25,8 @@ class ArtEditor extends Sprite {
 	public static var WIDTH:Int = 640;
 	public static var HEIGHT:Int = 480;
 	
+	public static var instance:ArtEditor;
+	
 	public var data:BitmapData;
 	
 	var assets:Map<Art, Shape>;
@@ -39,6 +43,9 @@ class ArtEditor extends Sprite {
 	
 	public function new (data:BitmapData) {
 		super();
+		
+		if (instance != null)	throw new Error("Already instanciated");
+		instance = this;
 		
 		this.data = data;
 		
@@ -188,6 +195,11 @@ class ArtEditor extends Sprite {
 	
 	function resetData (art:Art) {
 		data.fillRect(coords.get(art), 0xFF000000 + Std.random(0xFFFFFF));
+	}
+	
+	public function paint (art:Art, target:BitmapData, dest:Point = null) {
+		if (dest == null)	dest = new Point();
+		target.copyPixels(data, coords.get(art), dest);
 	}
 	
 	//{ ---- MOUSE EVENT HANDLERS ----

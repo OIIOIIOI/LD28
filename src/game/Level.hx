@@ -35,7 +35,6 @@ class Level {
 		}
 	}
 	
-	// TODO Design and store different levels to randomly choose from
 	public function load (lvl:Int = 0, n:Int = -1) {
 		if (n == -1)	n = 0;
 		Main.TAR.x = n * WIDTH;
@@ -44,10 +43,6 @@ class Level {
 		Main.TAR.height = HEIGHT;
 		Main.TAP.x = Main.TAP.y = 0;
 		data.copyPixels(Main.LEVELS, Main.TAR, Main.TAP);
-	}
-	
-	public function loadExt (url:String) {
-		
 	}
 	
 	public function collide (x:Int, y:Int) :Bool {

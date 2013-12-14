@@ -1,4 +1,5 @@
 package game;
+import art.ArtEditor;
 import game.Entity.Dir;
 
 
@@ -28,6 +29,10 @@ class PFEnemy extends PFEntity {
 			if (facing == Dir.RIGHT)	facing = Dir.LEFT;
 			else						facing = Dir.RIGHT;
 		}
+	}
+	
+	override function draw () {
+		ArtEditor.instance.paint(Art.Enemy, spriteData);
 	}
 	
 }

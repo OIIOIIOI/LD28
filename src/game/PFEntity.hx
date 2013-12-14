@@ -13,9 +13,10 @@ class PFEntity extends Entity {
 	public var alive:Bool;
 	
 	public function new (w:Int=1, h:Int=1) {
+		alive = true;
+		
 		super(w, h);
 		
-		alive = true;
 		gravity = 0.04;
 	}
 	
@@ -43,7 +44,12 @@ class PFEntity extends Entity {
 		isSolid = false;
 		dx = 0;
 		dy = -0.5;
-		draw(0x333333);
+		draw();
+	}
+	
+	override function draw () {
+		if (alive)	spriteData.fillRect(spriteData.rect, 0xFFFF00FF);
+		else		spriteData.fillRect(spriteData.rect, 0xFF333333);
 	}
 	
 	function isOnGround () :Bool {

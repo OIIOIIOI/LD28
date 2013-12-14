@@ -151,7 +151,7 @@ class Main extends Sprite {
 				#else
 				playGame = new PFGame(artEditor.data);
 				#end
-				playGame.x = 200;
+				playGame.x = 140;
 				playGame.y = 120;
 				addChild(playGame);
 				addEventListener(Event.ENTER_FRAME, update);

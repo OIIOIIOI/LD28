@@ -1,4 +1,8 @@
 package game;
+import art.ArtEditor;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.geom.Point;
 
 
 /**
@@ -16,8 +20,14 @@ class PFLevel extends Level {
 	public var end:IntPoint;
 	public var enemies:Array<IntPoint>;
 	
+	var spriteData:BitmapData;
+	public var sprite:Bitmap;
+	
 	public function new () {
 		super();
+		
+		spriteData = new BitmapData(Level.WIDTH * Level.GRID_SIZE, Level.HEIGHT * Level.GRID_SIZE, true, 0xFF0080FF);
+		sprite = new Bitmap(spriteData);
 	}
 	
 	override public function generateCrap () {
@@ -50,11 +60,13 @@ class PFLevel extends Level {
 				}
 				else if (px == C_END && end == null) {
 					end = new IntPoint(x, y);
-					data.setPixel(end.x, end.y, C_END);
-					data.setPixel(end.x, end.y + 1, C_END);
+					ArtEditor.instance.paint(Art.Treasure, spriteData, new Point(x * Level.GRID_SIZE, y * Level.GRID_SIZE));
 				}
 				else if (px == C_ENEMY) {
 					enemies.push(new IntPoint(x, y));
+				}
+				else if (px == Level.C_SOLID) {
+					ArtEditor.instance.paint(Art.Block, spriteData, new Point(x * Level.GRID_SIZE, y * Level.GRID_SIZE));
 				}
 			}
 		}

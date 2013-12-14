@@ -1,4 +1,5 @@
 package game;
+import art.ArtEditor;
 
 
 /**
@@ -34,6 +35,10 @@ class PFHero extends PFEntity {
 			return true;
 		}
 		return false;
+	}
+	
+	override function draw () {
+		ArtEditor.instance.paint(Art.Hero, spriteData);
 	}
 	
 }
