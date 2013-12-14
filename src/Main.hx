@@ -1,5 +1,6 @@
 package ;
 
+import art.ArtEditor;
 import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.display.StageAlign;
@@ -38,10 +39,14 @@ class Main extends Sprite {
 		fakeData.setPixel32(1, 0, 0xFFFFFFFF);
 		fakeData.setPixel32(2, 0, 0xFFFFFFFF);
 		
-		uGame = new PFGame(fakeData);
-		addChild(uGame);
+		var e = new ArtEditor();
+		e.edit(Art.Hero);
+		addChild(e);
 		
-		addEventListener(Event.ENTER_FRAME, update);
+		//uGame = new PFGame(fakeData);
+		//addChild(uGame);
+		
+		//addEventListener(Event.ENTER_FRAME, update);
 	}
 	
 	function update (e:Event) {
