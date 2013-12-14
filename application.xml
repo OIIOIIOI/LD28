@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<!-- NMML reference: https://gist.github.com/1763850 -->
+	
+	<!-- metadata, make sure 'package' is at least 3 segments (ie. com.mycompany.myproject) -->
+	<meta title="LD28" package="LD28" version="1.0.0" company="01101101" />
+	
+	<!-- output -->
+	<app main="Main" file="LD28" path="bin" />
+	
+	<window background="#E0E0E0" fps="60" />
+	<window width="800" height="600" unless="mobile" />
+	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
+	
+	<!-- classpath, haxe libs -->
+	<source path="src" />
+	<haxelib name="openfl" />
+	
+	<!-- assets -->
+	<icon path="assets/01101101.svg" />
+	<assets path="assets/img" rename="img" />
+	
+	<!-- optimize output
+	<haxeflag name="-dce full" /> -->
+	
+</project>
