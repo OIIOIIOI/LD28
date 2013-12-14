@@ -1,6 +1,5 @@
 package game;
 
-import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.KeyboardEvent;
 import flash.Lib;
@@ -13,8 +12,6 @@ import flash.ui.Keyboard;
 
 class Game extends Sprite {
 	
-	var level:Level;
-	
 	var keys:Map<Int, Bool>;
 	
 	public function new () {
@@ -23,20 +20,9 @@ class Game extends Sprite {
 		registerKeys();
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
-		
-		setupLevel();
 	}
 	
-	function setupLevel () {
-		level = new Level();
-		var b:Bitmap = new Bitmap(level.data);
-		b.scaleX = b.scaleY = Level.GRID_SIZE;
-		addChild(b);
-	}
-	
-	public function update () {
-		
-	}
+	public function update () { }
 	
 	function registerKeys () {
 		if (keys != null)	return;

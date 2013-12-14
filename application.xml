@@ -9,7 +9,7 @@
 	<app main="Main" file="LD28" path="bin" />
 	
 	<window background="#E0E0E0" fps="60" />
-	<window width="800" height="600" unless="mobile" />
+	<window width="1000" height="700" unless="mobile" />
 	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
 	
 	<!-- classpath, haxe libs -->
@@ -19,6 +19,8 @@
 	<!-- assets -->
 	<icon path="assets/01101101.svg" />
 	<assets path="assets/img" rename="img" />
+	
+	<app swf-version="11.3"/>
 	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->

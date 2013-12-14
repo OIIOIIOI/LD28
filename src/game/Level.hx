@@ -34,7 +34,7 @@ class Level {
 	
 	// TODO Design and store different levels to randomly choose from
 	
-	public function isSolid (x:Int, y:Int) :Bool {
+	public function collide (x:Int, y:Int) :Bool {
 		return (data.getPixel(x, y) == C_SOLID);
 	}
 	

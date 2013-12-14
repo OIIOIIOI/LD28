@@ -1,5 +1,6 @@
 package ;
 
+import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -32,7 +33,12 @@ class Main extends Sprite {
 		super();
 		
 		//uGame = new Game();
-		uGame = new PFGame();
+		var fakeData:BitmapData = new BitmapData(8, 8, true, 0x00FF00FF);
+		fakeData.setPixel32(0, 0, 0xFFFFFFFF);
+		fakeData.setPixel32(1, 0, 0xFFFFFFFF);
+		fakeData.setPixel32(2, 0, 0xFFFFFFFF);
+		
+		uGame = new PFGame(fakeData);
 		addChild(uGame);
 		
 		addEventListener(Event.ENTER_FRAME, update);

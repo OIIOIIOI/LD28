@@ -14,6 +14,7 @@ class PFHero extends PFEntity {
 	public function new (w:Int=1, h:Int=1) {
 		super(w, h);
 		
+		hSpeed = 0.02;
 		jumpSpeed = -0.8;
 		jumpBoost = 2.2;
 	}

@@ -1,6 +1,7 @@
 package game;
 
 import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.ui.Keyboard;
 import game.Entity.Dir;
 
@@ -9,26 +10,50 @@ import game.Entity.Dir;
  * @author 01101101
  */
 
+typedef Params = {
+	var move:Bool;
+	var enemies:Bool;
+	var jump:Bool;
+}
+
 class PFGame extends Game {
 	
+	var sprites:BitmapData;
+	var params:Params;
+	
+	var level:PFLevel;
 	var hero:PFHero;
 	var enemies:Array<PFEnemy>;
 	
-	public function new () {
+	public function new (data:BitmapData) {
 		super();
-		
+		// Parse game data
+		sprites = data;
+		parseData(data);
+		// Level
+		setupLevel();
+		// Create hero
 		hero = new PFHero(1, 2);
-		hero.collide = level.isSolid;
+		hero.collide = level.collide;
 		hero.setCoords(cast(level).start.x * Level.GRID_SIZE, cast(level).start.y * Level.GRID_SIZE);
 		addChild(hero.sprite);
-		
+		// Add enemies
 		enemies = new Array();
-		enemies.push(getNewEnemy());
-		enemies.push(getNewEnemy());
-		enemies.push(getNewEnemy());
+		if (params.enemies) {
+			for (e in level.enemies) {
+				enemies.push(getNewEnemy(e));
+			}
+		}
 	}
 	
-	override function setupLevel () {
+	function parseData (data:BitmapData) {
+		params = { move:false, jump:false, enemies:false };
+		params.move =		(data.getPixel32(0, 0) == cast(0xFFFFFFFF));
+		params.enemies =	(data.getPixel32(1, 0) == cast(0xFFFFFFFF));
+		params.jump =		(data.getPixel32(2, 0) == cast(0xFFFFFFFF));
+	}
+	
+	function setupLevel () {
 		level = new PFLevel();
 		var b:Bitmap = new Bitmap(level.data);
 		b.scaleX = b.scaleY = Level.GRID_SIZE;
@@ -38,9 +63,9 @@ class PFGame extends Game {
 	override public function update () {
 		// Inputs
 		if (hero.alive) {
-			if (keys.get(Keyboard.RIGHT))	hero.move(Dir.RIGHT);
-			if (keys.get(Keyboard.LEFT))	hero.move(Dir.LEFT);
-			if (keys.get(Keyboard.SPACE))	hero.jump();
+			if (params.move && keys.get(Keyboard.RIGHT))	hero.move(Dir.RIGHT);
+			if (params.move && keys.get(Keyboard.LEFT))	hero.move(Dir.LEFT);
+			if (params.jump && keys.get(Keyboard.SPACE))	hero.jump();
 		}
 		// Updates
 		for (e in enemies)	e.update();
@@ -48,12 +73,13 @@ class PFGame extends Game {
 		// Stop the loop here if hero is dead
 		if (!hero.alive)	return;
 		// Check collisions with enemies
+		var bounce:Bool = false;
 		for (e in enemies) {
 			if (!e.alive)	continue;
 			if (hero.collideEntity(e)) {
 				if (hero.dy > 0) {
 					// Hero bounces off
-					hero.jump(true);
+					bounce = true;
 					// Enemy dies
 					e.die();
 				} else {
@@ -63,6 +89,7 @@ class PFGame extends Game {
 				}
 			}
 		}
+		if (bounce)	hero.jump(true);
 		// Check end conditions
 		if (hero.cx == cast(level).end.x && hero.cy == cast(level).end.y) {
 			for (e in enemies)	if (e.alive)	e.die();
@@ -72,10 +99,11 @@ class PFGame extends Game {
 	
 	// TODO remove dead entities from the loop
 	
-	function getNewEnemy () :PFEnemy {
+	function getNewEnemy (p:IntPoint) :PFEnemy {
+		if (p == null)	p = new IntPoint(Std.random(Level.WIDTH), Std.random(Level.HEIGHT));
 		var e:PFEnemy = new PFEnemy();
-		e.collide = level.isSolid;
-		e.setCoords(Std.random(Level.WIDTH) * Level.GRID_SIZE, 0);
+		e.collide = level.collide;
+		e.setCoords(p.x * Level.GRID_SIZE, p.y * Level.GRID_SIZE);
 		addChild(e.sprite);
 		return e;
 	}
@@ -89,3 +117,13 @@ class PFGame extends Game {
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
