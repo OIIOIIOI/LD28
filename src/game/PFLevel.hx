@@ -26,7 +26,7 @@ class PFLevel extends Level {
 	public function new () {
 		super();
 		
-		spriteData = new BitmapData(Level.WIDTH * Level.GRID_SIZE, Level.HEIGHT * Level.GRID_SIZE, true, 0xFF0080FF);
+		spriteData = new BitmapData(Level.WIDTH * Level.GRID_SIZE, Level.HEIGHT * Level.GRID_SIZE, true, 0xFFFFFFFF);
 		sprite = new Bitmap(spriteData);
 	}
 	

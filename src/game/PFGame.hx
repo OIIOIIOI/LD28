@@ -67,9 +67,6 @@ class PFGame extends Game {
 		level.load(0, 0);
 		#end
 		addChild(level.sprite);
-		//var b:Bitmap = new Bitmap(level.data);
-		//b.scaleX = b.scaleY = Level.GRID_SIZE;
-		//addChild(b);
 	}
 	
 	public function clean () {

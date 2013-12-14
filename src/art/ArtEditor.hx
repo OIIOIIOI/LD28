@@ -87,6 +87,9 @@ class ArtEditor extends Sprite {
 		canvas.addEventListener(MouseEvent.MOUSE_DOWN, downHandler);
 	}
 	
+	// TODO Brush size, brush color (palettes)
+	// TODO Asset selection
+	
 	// Select the asset to edit
 	public function edit (art:Art) {
 		current = art;
@@ -190,6 +193,7 @@ class ArtEditor extends Sprite {
 			Main.TAM.identity();
 			Main.TAM.translate(coords.get(current).x, coords.get(current).y);
 			data.draw(assets.get(current), Main.TAM);
+			// TODO avoid drawing out of the rect (erasing data line 0)
 		}
 	}
 	

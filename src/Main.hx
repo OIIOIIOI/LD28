@@ -90,7 +90,7 @@ class Main extends Sprite {
 		
 		artEditor = new ArtEditor(startData);
 		artEditor.x = artEditor.y = 100;
-		artEditor.edit(Art.Hero);
+		artEditor.edit(Art.Block);
 		
 		startMode(Mode.Desktop);
 	}
