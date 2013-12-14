@@ -19,10 +19,9 @@
 	<!-- assets -->
 	<icon path="assets/01101101.svg" />
 	<assets path="assets/img" rename="img" />
+	<assets path="assets/fonts" include="*.ttf" rename="fonts" />
 	
 	<app swf-version="11.3"/>
-	
-	<!-- optimize output
-	<haxeflag name="-dce full" /> -->
+	<haxeflag name="-D extLoad" />
 	
 </project>

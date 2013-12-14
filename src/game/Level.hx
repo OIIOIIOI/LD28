@@ -20,11 +20,14 @@ class Level {
 	
 	public function new () {
 		data = new BitmapData(WIDTH, HEIGHT, false, C_VOID);
+	}
+	
+	public function generateCrap () {
+		// Ground
 		Main.TAR.x = 0;
 		Main.TAR.y = data.height - 1;
 		Main.TAR.width = data.width;
 		Main.TAR.height = 1;
-		// Ground
 		data.fillRect(Main.TAR, C_SOLID);
 		// Random crap generation
 		for (i in 0...10) {
@@ -33,6 +36,19 @@ class Level {
 	}
 	
 	// TODO Design and store different levels to randomly choose from
+	public function load (lvl:Int = 0, n:Int = -1) {
+		if (n == -1)	n = 0;
+		Main.TAR.x = n * WIDTH;
+		Main.TAR.y = lvl * HEIGHT;
+		Main.TAR.width = WIDTH;
+		Main.TAR.height = HEIGHT;
+		Main.TAP.x = Main.TAP.y = 0;
+		data.copyPixels(Main.LEVELS, Main.TAR, Main.TAP);
+	}
+	
+	public function loadExt (url:String) {
+		
+	}
 	
 	public function collide (x:Int, y:Int) :Bool {
 		return (data.getPixel(x, y) == C_SOLID);

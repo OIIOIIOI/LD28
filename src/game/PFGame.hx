@@ -25,25 +25,24 @@ class PFGame extends Game {
 	var hero:PFHero;
 	var enemies:Array<PFEnemy>;
 	
+	#if extLoad
+	public function new (data:BitmapData, debug:Array<String>) {
+	#else
 	public function new (data:BitmapData) {
+	#end
 		super();
 		// Parse game data
 		sprites = data;
 		parseData(data);
 		// Level
+		#if extLoad
+		setupLevel(debug);
+		#else
 		setupLevel();
-		// Create hero
-		hero = new PFHero(1, 2);
-		hero.collide = level.collide;
-		hero.setCoords(cast(level).start.x * Level.GRID_SIZE, cast(level).start.y * Level.GRID_SIZE);
-		addChild(hero.sprite);
-		// Add enemies
+		#end
+		// Init
 		enemies = new Array();
-		if (params.enemies) {
-			for (e in level.enemies) {
-				enemies.push(getNewEnemy(e));
-			}
-		}
+		restartLevel();
 	}
 	
 	function parseData (data:BitmapData) {
@@ -53,14 +52,53 @@ class PFGame extends Game {
 		params.jump =		(data.getPixel32(2, 0) == cast(0xFFFFFFFF));
 	}
 	
+	#if extLoad
+	function setupLevel (debug:Array<String>) {
+	#else
 	function setupLevel () {
+	#end
 		level = new PFLevel();
+		//level.generateCrap();
+		#if extLoad
+		level.load(Std.parseInt(debug[0]), Std.parseInt(debug[1]));
+		#else
+		level.load(0, 0);
+		#end
 		var b:Bitmap = new Bitmap(level.data);
 		b.scaleX = b.scaleY = Level.GRID_SIZE;
 		addChild(b);
 	}
 	
+	function clean () {
+		if (contains(hero.sprite))	removeChild(hero.sprite);
+		hero = null;
+		while (enemies.length > 0) {
+			var e = enemies.shift();
+			if (contains(e.sprite))	removeChild(e.sprite);
+			e = null;
+		}
+	}
+	
+	function restartLevel () {
+		// Create hero
+		hero = new PFHero(1, 2);
+		hero.collide = level.collide;
+		hero.setCoords(cast(level).start.x * Level.GRID_SIZE, cast(level).start.y * Level.GRID_SIZE);
+		addChild(hero.sprite);
+		// Add enemies
+		if (params.enemies) {
+			for (e in level.enemies) {
+				enemies.push(getNewEnemy(e));
+			}
+		}
+	}
+	
 	override public function update () {
+		// Restart
+		if (keys.get(Keyboard.ENTER)) {
+			clean();
+			restartLevel();
+		}
 		// Inputs
 		if (hero.alive) {
 			if (params.move && keys.get(Keyboard.RIGHT))	hero.move(Dir.RIGHT);
@@ -98,6 +136,7 @@ class PFGame extends Game {
 	}
 	
 	// TODO remove dead entities from the loop
+	// TODO restart level button
 	
 	function getNewEnemy (p:IntPoint) :PFEnemy {
 		if (p == null)	p = new IntPoint(Std.random(Level.WIDTH), Std.random(Level.HEIGHT));
@@ -114,6 +153,7 @@ class PFGame extends Game {
 		keys.set(Keyboard.RIGHT, false);
 		keys.set(Keyboard.LEFT, false);
 		keys.set(Keyboard.SPACE, false);
+		keys.set(Keyboard.ENTER, false);
 	}
 	
 }

@@ -14,7 +14,8 @@ class PFEnemy extends PFEntity {
 		
 		hSpeed = 0.005;
 		
-		facing = (Std.random(2) == 0) ? Dir.RIGHT : Dir.LEFT;
+		//facing = (Std.random(2) == 0) ? Dir.RIGHT : Dir.LEFT;
+		facing = Dir.RIGHT;
 	}
 	
 	override public function update () {
