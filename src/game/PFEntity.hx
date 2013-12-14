@@ -40,13 +40,16 @@ class PFEntity extends Entity {
 	
 	public function die () {
 		alive = false;
+		isSolid = false;
+		dx = 0;
+		dy = -0.3;
 		draw(0x333333);
 	}
 	
 	function isOnGround () :Bool {
 		if (dy != 0)	return false;
 		for (i in -1...w+1) {
-			if (isSolid(cx + i, cy + h))	return true;
+			if (collide(cx + i, cy + h))	return true;
 		}
 		return false;
 	}

@@ -18,7 +18,7 @@ class PFGame extends Game {
 		super();
 		
 		hero = new PFHero(1, 2);
-		hero.isSolid = level.isSolid;
+		hero.collide = level.isSolid;
 		hero.setCoords(cast(level).start.x * Level.GRID_SIZE, cast(level).start.y * Level.GRID_SIZE);
 		addChild(hero.sprite);
 		
@@ -50,7 +50,7 @@ class PFGame extends Game {
 		// Check collisions with enemies
 		for (e in enemies) {
 			if (!e.alive)	continue;
-			if (hero.collide(e)) {
+			if (hero.collideEntity(e)) {
 				if (hero.dy > 0) {
 					// Hero bounces off
 					hero.jump(true);
@@ -59,18 +59,22 @@ class PFGame extends Game {
 				} else {
 					// Hero dies
 					hero.die();
+					trace("YOU'RE DEAD");
 				}
 			}
 		}
 		// Check end conditions
 		if (hero.cx == cast(level).end.x && hero.cy == cast(level).end.y) {
-			// WIN
+			for (e in enemies)	if (e.alive)	e.die();
+			trace("YOU WIN");
 		}
 	}
 	
+	// TODO remove dead entities from the loop
+	
 	function getNewEnemy () :PFEnemy {
 		var e:PFEnemy = new PFEnemy();
-		e.isSolid = level.isSolid;
+		e.collide = level.isSolid;
 		e.setCoords(Std.random(Level.WIDTH) * Level.GRID_SIZE, 0);
 		addChild(e.sprite);
 		return e;

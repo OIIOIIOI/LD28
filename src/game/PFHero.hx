@@ -25,7 +25,7 @@ class PFHero extends PFEntity {
 		}
 	}
 	
-	public function collide (e:PFEntity) {
+	public function collideEntity (e:PFEntity) {
 		if (bottom() > e.top() &&
 			top() < e.bottom() &&
 			right() > e.left() &&

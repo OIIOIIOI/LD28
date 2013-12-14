@@ -36,7 +36,8 @@ class Entity {
 	var vSpeed:Float;
 	
 	// Collision function
-	public var isSolid:Int->Int->Bool;
+	public var collide:Int->Int->Bool;
+	var isSolid:Bool;
 	
 	// Graphic asset
 	public var sprite:Sprite;
@@ -50,6 +51,8 @@ class Entity {
 		hSpeed = 0.01;
 		vSpeed = 0.01;
 		friction = 0.9;
+		
+		isSolid = true;
 		
 		sprite = new Sprite();
 		draw();
@@ -81,7 +84,7 @@ class Entity {
 	function updateX () {
 		// Adjust positions if out of the current cell
 		while (xr > 1) {
-			if (dx > 0 && fastColl(Dir.RIGHT)) {
+			if (isSolid && dx > 0 && fastColl(Dir.RIGHT)) {
 				xr = max;
 				dx = 0;
 			} else {
@@ -90,7 +93,7 @@ class Entity {
 			}
 		}
 		while (xr < 0) {
-			if (dx < 0 && fastColl(Dir.LEFT)) {
+			if (isSolid && dx < 0 && fastColl(Dir.LEFT)) {
 				xr = max;
 				dx = 0;
 			} else {
@@ -101,13 +104,13 @@ class Entity {
 		// Friction
 		dx *= friction;
 		// Collisions
-		collX();
+		if (isSolid)	collX();
 	}
 	
 	function updateY () {
 		// Adjust positions if out of the current cell
 		while (yr > 1) {
-			if (dy > 0 && fastColl(Dir.DOWN)) {
+			if (isSolid && dy > 0 && fastColl(Dir.DOWN)) {
 				yr = max;
 				dy = 0;
 				break;
@@ -117,7 +120,7 @@ class Entity {
 			}
 		}
 		while (yr < 0) {
-			if (dy < 0 && fastColl(Dir.UP)) {
+			if (isSolid && dy < 0 && fastColl(Dir.UP)) {
 				yr = min;
 				dy = 0;
 				dx *= 0.25;
@@ -130,35 +133,35 @@ class Entity {
 		// Friction
 		dy *= friction;
 		// Collisions
-		collY();
+		if (isSolid)	collY();
 	}
 	
 	function fastColl (dir:Dir) :Bool {
 		switch (dir) {
 			case Dir.UP:
 				for (i in 0...w) {
-					if (isSolid(cx + i, cy - 1))	return true;
+					if (collide(cx + i, cy - 1))	return true;
 				}
-				if (xr < min && isSolid(cx - 1, cy - 1))	return true;
-				if (xr > max && isSolid(cx + w, cy - 1))	return true;
+				if (xr < min && collide(cx - 1, cy - 1))	return true;
+				if (xr > max && collide(cx + w, cy - 1))	return true;
 			case Dir.DOWN:
 				for (i in 0...w) {
-					if (isSolid(cx + i, cy + h))	return true;
+					if (collide(cx + i, cy + h))	return true;
 				}
-				if (xr < min && isSolid(cx - 1, cy + h))	return true;
-				if (xr > max && isSolid(cx + w, cy + h))	return true;
+				if (xr < min && collide(cx - 1, cy + h))	return true;
+				if (xr > max && collide(cx + w, cy + h))	return true;
 			case Dir.LEFT:
 				for (i in 0...h) {
-					if (isSolid(cx - 1, cy + i))	return true;
+					if (collide(cx - 1, cy + i))	return true;
 				}
-				if (yr < min && isSolid(cx - 1, cy - 1))	return true;
-				if (yr > max && isSolid(cx - 1, cy + h))	return true;
+				if (yr < min && collide(cx - 1, cy - 1))	return true;
+				if (yr > max && collide(cx - 1, cy + h))	return true;
 			case Dir.RIGHT:
 				for (i in 0...h) {
-					if (isSolid(cx + w, cy + i))	return true;
+					if (collide(cx + w, cy + i))	return true;
 				}
-				if (yr < min && isSolid(cx + w, cy - 1))	return true;
-				if (yr > max && isSolid(cx + w, cy + h))	return true;
+				if (yr < min && collide(cx + w, cy - 1))	return true;
+				if (yr > max && collide(cx + w, cy + h))	return true;
 			default:
 		}
 		return false;
@@ -167,32 +170,32 @@ class Entity {
 	function collX () :Bool {
 		// Sides
 		for (i in 0...h) {
-			if (xr > max && isSolid(cx + w, cy + i)) {
+			if (xr > max && collide(cx + w, cy + i)) {
 				xr = max;
 				dx = 0;
 				return true;
 			}
-			if (xr < min && isSolid(cx - 1, cy + i)) {
+			if (xr < min && collide(cx - 1, cy + i)) {
 				xr = min;
 				dx = 0;
 				return true;
 			}
 		}
 		// Corners
-		if (yr > max && xr > max && isSolid(cx + w, cy + h)) {
+		if (yr > max && xr > max && collide(cx + w, cy + h)) {
 			xr = max;
 			dx = 0;
 			return true;
-		} else if (yr < min && xr > max && isSolid(cx + w, cy - 1)) {
+		} else if (yr < min && xr > max && collide(cx + w, cy - 1)) {
 			xr = max;
 			dx = 0;
 			return true;
 		}
-		if (yr > max && xr < min && isSolid(cx - 1, cy + h)) {
+		if (yr > max && xr < min && collide(cx - 1, cy + h)) {
 			xr = min;
 			dx = 0;
 			return true;
-		} else if (yr < min && xr < min && isSolid(cx - 1, cy - 1)) {
+		} else if (yr < min && xr < min && collide(cx - 1, cy - 1)) {
 			xr = min;
 			dx = 0;
 			return true;
@@ -203,32 +206,32 @@ class Entity {
 	function collY () :Bool {
 		// Sides
 		for (i in 0...w) {
-			if (yr > max && isSolid(cx + i, cy + h)) {
+			if (yr > max && collide(cx + i, cy + h)) {
 				yr = max;
 				dy = 0;
 				return true;
 			}
-			if (yr < min && isSolid(cx + i, cy - 1)) {
+			if (yr < min && collide(cx + i, cy - 1)) {
 				yr = min;
 				dy = 0;
 				return true;
 			}
 		}
 		// Corners
-		if (xr > max && yr > max && isSolid(cx + w, cy + h)) {
+		if (xr > max && yr > max && collide(cx + w, cy + h)) {
 			yr = max;
 			dy = 0;
 			return true;
-		} else if (xr < min && yr > max && isSolid(cx - 1, cy + h)) {
+		} else if (xr < min && yr > max && collide(cx - 1, cy + h)) {
 			yr = max;
 			dy = 0;
 			return true;
 		}
-		if (xr > max && yr < min && isSolid(cx + w, cy - 1)) {
+		if (xr > max && yr < min && collide(cx + w, cy - 1)) {
 			yr = min;
 			dy = 0;
 			return true;
-		} else if (xr < min && yr < min && isSolid(cx - 1, cy - 1)) {
+		} else if (xr < min && yr < min && collide(cx - 1, cy - 1)) {
 			yr = min;
 			dy = 0;
 			return true;
