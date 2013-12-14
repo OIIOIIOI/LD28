@@ -5,7 +5,6 @@ import flash.display.Sprite;
 import flash.events.KeyboardEvent;
 import flash.Lib;
 import flash.ui.Keyboard;
-import game.Entity.Dir;
 
 /**
  * ...
@@ -15,7 +14,6 @@ import game.Entity.Dir;
 class Game extends Sprite {
 	
 	var level:Level;
-	var hero:Entity;
 	
 	var keys:Map<Int, Bool>;
 	
@@ -27,7 +25,6 @@ class Game extends Sprite {
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 		
 		setupLevel();
-		setupHero();
 	}
 	
 	function setupLevel () {
@@ -37,21 +34,8 @@ class Game extends Sprite {
 		addChild(b);
 	}
 	
-	function setupHero () {
-		hero = new Entity(1, 2);
-		hero.isSolid = level.isSolid;
-		hero.setCoords(20, 30);
-		addChild(hero.sprite);
-	}
-	
 	public function update () {
-		// Inputs
-		if (keys.get(Keyboard.UP))		hero.move(Dir.UP);
-		if (keys.get(Keyboard.RIGHT))	hero.move(Dir.RIGHT);
-		if (keys.get(Keyboard.DOWN))	hero.move(Dir.DOWN);
-		if (keys.get(Keyboard.LEFT))	hero.move(Dir.LEFT);
-		// Updates
-		hero.update();
+		
 	}
 	
 	function registerKeys () {

@@ -15,14 +15,24 @@ class PFHero extends PFEntity {
 		super(w, h);
 		
 		jumpSpeed = -0.8;
-		jumpBoost = 2;
+		jumpBoost = 2.2;
 	}
 	
-	public function jump () {
-		if (isOnGround()) {
+	public function jump (force:Bool = false) {
+		if (isOnGround() || force) {
 			dy = jumpSpeed;
 			dx *= jumpBoost;
 		}
+	}
+	
+	public function collide (e:PFEntity) {
+		if (bottom() > e.top() &&
+			top() < e.bottom() &&
+			right() > e.left() &&
+			left() < e.right()) {
+			return true;
+		}
+		return false;
 	}
 	
 }

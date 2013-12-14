@@ -13,14 +13,14 @@ class Entity {
 	public var cx:Int;
 	public var cy:Int;
 	// Cell ratio
-	var xr:Float;
-	var yr:Float;
+	public var xr:Float;
+	public var yr:Float;
 	// Resulting coords
-	var xx:Int;
-	var yy:Int;
+	public var xx:Int;
+	public var yy:Int;
 	// Movements
-	var dx:Float;
-	var dy:Float;
+	public var dx:Float;
+	public var dy:Float;
 	// Friction
 	var friction:Float;
 	// Min/max cell ratio
@@ -237,8 +237,13 @@ class Entity {
 	}
 	
 	function updateFacing () {
-		if (dx > 0)			facing = Dir.RIGHT;
-		else if (dx < 0)	facing = Dir.LEFT;
+		if (Math.abs(dx) > Math.abs(dy)) {
+			if (dx > 0)	facing = Dir.RIGHT;
+			else		facing = Dir.LEFT;
+		} else if (Math.abs(dx) < Math.abs(dy)) {
+			if (dy > 0)	facing = Dir.DOWN;
+			else		facing = Dir.UP;
+		}
 	}
 	
 	function updateFinal () {
@@ -259,12 +264,17 @@ class Entity {
 		yr = (yy - cy * Level.GRID_SIZE) / Level.GRID_SIZE;
 	}
 	
-	function draw () {
+	function draw (c:UInt = 0xFF00FF) {
 		sprite.graphics.clear();
-		sprite.graphics.beginFill(0xFF00FF, 0.8);
+		sprite.graphics.beginFill(c);
 		sprite.graphics.drawRect(-Level.GRID_SIZE / 2, -Level.GRID_SIZE / 2, Level.GRID_SIZE * w, Level.GRID_SIZE * h);
 		sprite.graphics.endFill();
 	}
+	
+	public function top () :Float {		return (cy + yr); }
+	public function bottom () :Float {	return (cy + h + yr); }
+	public function left () :Float {	return (cx + xr); }
+	public function right () :Float {	return (cx + w + xr); }
 	
 }
 
