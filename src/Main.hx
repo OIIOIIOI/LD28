@@ -7,6 +7,7 @@ import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.Event;
+import flash.events.MouseEvent;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -16,6 +17,7 @@ import flash.net.URLRequest;
 import game.Game;
 import game.PFGame;
 import openfl.Assets;
+import ui.Button;
 
 /**
  * ...
@@ -30,7 +32,11 @@ class Main extends Sprite {
 	public static var UI_ATLAS:BitmapData;
 	public static var LEVELS:BitmapData;
 	
-	var uGame:Game;
+	var mode:Mode;
+	
+	var artEditor:ArtEditor;
+	var playGame:PFGame;
+	
 	#if extLoad
 	var debug:Array<String>;
 	#end
@@ -39,15 +45,12 @@ class Main extends Sprite {
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 		Lib.current.addChild(new Main());
-		
-		#if extLoad
-		trace("extLoad");
-		#end
 	}
 	
 	#if extLoad
 	public function new () {
 		super();
+		trace("extLoad");
 		var l:URLLoader = new URLLoader();
 		l.addEventListener(Event.COMPLETE, txtCompleteHandler);
 		l.load(new URLRequest("C:/debug.txt"));
@@ -78,26 +81,103 @@ class Main extends Sprite {
 		LEVELS = Assets.getBitmapData("img/levels.png");
 		#end
 		
-		var fakeData:BitmapData = new BitmapData(128, 128, true, 0x00FF00FF);
-		fakeData.setPixel32(0, 0, 0xFFFFFFFF);
-		fakeData.setPixel32(1, 0, 0xFFFFFFFF);
-		fakeData.setPixel32(2, 0, 0xFFFFFFFF);
+		setupUI();
 		
-		var e = new ArtEditor(fakeData);
-		e.edit(Art.Hero);
-		addChild(e);
+		var startData:BitmapData = new BitmapData(128, 128, true, 0x00FF00FF);
+		startData.setPixel32(0, 0, 0xFFFFFFFF);
+		startData.setPixel32(1, 0, 0xFFFFFFFF);
+		startData.setPixel32(2, 0, 0xFFFFFFFF);
 		
-		/*#if extLoad
-		uGame = new PFGame(fakeData, debug);
-		#else
-		uGame = new PFGame(fakeData);
-		#end
-		addChild(uGame);
-		addEventListener(Event.ENTER_FRAME, update);*/
+		artEditor = new ArtEditor(startData);
+		artEditor.x = artEditor.y = 100;
+		artEditor.edit(Art.Hero);
+		
+		startMode(Mode.Desktop);
 	}
 	
-	/*function update (e:Event) {
-		uGame.update();
-	}*/
+	//{ ---- UI ----
+	var editorButton:Button;
+	var playButton:Button;
+	
+	function setupUI () {
+		editorButton = new Button([new Rectangle(-1, -1, 20, 20)], 0xFF999999, 0xFF666666);
+		editorButton.setText("Art", 0, 0);
+		editorButton.x = editorButton.y = 8;
+		
+		playButton = new Button([new Rectangle(-1, -1, 20, 20)], 0xFF999999, 0xFF666666);
+		playButton.setText("Play", 0, 0);
+		playButton.x = 8;
+		playButton.y = 64;
+		
+		addChild(editorButton);
+		addChild(playButton);
+		
+		editorButton.addEventListener(MouseEvent.CLICK, clickHandler);
+		playButton.addEventListener(MouseEvent.CLICK, clickHandler);
+	}
+	//}
+	
+	function clickHandler (e:MouseEvent) {
+		if (e.currentTarget == editorButton) {
+			startMode(Mode.ArtEdit);
+		} else if (e.currentTarget == playButton) {
+			startMode(Mode.PlayTest);
+		}
+	}
+	
+	function closeMode () {
+		switch (mode) {
+			case Mode.ArtEdit:
+				if (contains(artEditor))	removeChild(artEditor);
+			case Mode.PlayTest:
+				removeEventListener(Event.ENTER_FRAME, update);
+				if (contains(playGame))	removeChild(playGame);
+				playGame.clean();
+				playGame = null;
+			default:
+		}
+	}
+	
+	function startMode (m:Mode) {
+		// Close previous mode
+		if (mode != null)	closeMode();
+		// Start new mode
+		switch (m) {
+			case Mode.ArtEdit:
+				addChild(artEditor);
+			case Mode.PlayTest:
+				#if extLoad
+				playGame = new PFGame(artEditor.data, debug);
+				#else
+				playGame = new PFGame(artEditor.data);
+				#end
+				playGame.x = 200;
+				playGame.y = 120;
+				addChild(playGame);
+				addEventListener(Event.ENTER_FRAME, update);
+			default:
+		}
+		mode = m;
+	}
+	
+	function update (e:Event) {
+		playGame.update();
+	}
 	
 }
+
+enum Mode {
+	Desktop;
+	CodeEdit;
+	ArtEdit;
+	MusicEdit;
+	PlayTest;
+}
+
+
+
+
+
+
+
+

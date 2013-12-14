@@ -11,6 +11,7 @@ import flash.Lib;
 import flash.text.TextFormat;
 import game.Level;
 import ui.Button;
+import ui.UIObject;
 
 /**
  * ...
@@ -18,6 +19,9 @@ import ui.Button;
  */
 
 class ArtEditor extends Sprite {
+	
+	public static var WIDTH:Int = 640;
+	public static var HEIGHT:Int = 480;
 	
 	public var data:BitmapData;
 	
@@ -37,10 +41,7 @@ class ArtEditor extends Sprite {
 		super();
 		
 		this.data = data;
-		// TODO Remove this
-		var b = new Bitmap(data);
-		b.x = 100;
-		addChild(b);
+		
 		// Init shapes
 		assets = new Map<Art, Shape>();
 		assets.set(Art.Block, new Shape());
@@ -65,10 +66,16 @@ class ArtEditor extends Sprite {
 		brushColor = 0x666699;
 		zoomLevel = 1;
 		
+		setupUI();
+		
+		// TODO Remove this
+		var b = new Bitmap(data);
+		b.x = 80;
+		b.y = 8;
+		addChild(b);
+		
 		canvas = new Sprite();
 		addChild(canvas);
-		
-		setupUI();
 		
 		canvas.addEventListener(MouseEvent.MOUSE_DOWN, downHandler);
 	}
@@ -98,8 +105,8 @@ class ArtEditor extends Sprite {
 	function applyZoom () {
 		// Canvas
 		canvas.scaleX = canvas.scaleY = zoomLevel;
-		canvas.x = Std.int((Lib.current.stage.stageWidth - canvas.width) / 2);
-		canvas.y = Std.int((Lib.current.stage.stageHeight - canvas.height) / 2);
+		canvas.x = Std.int((WIDTH - canvas.width) / 2);
+		canvas.y = Std.int((HEIGHT - canvas.height) / 2);
 		// Asset
 		assets.get(current).scaleX = assets.get(current).scaleY = zoomLevel;
 		assets.get(current).x = canvas.x;
@@ -112,15 +119,18 @@ class ArtEditor extends Sprite {
 	}
 	
 	//{ ---- UI ----
+	var window:UIObject;
 	var zoomInButton:Button;
 	var zoomOutButton:Button;
 	var clearButton:Button;
 	var saveButton:Button;
 	
 	function setupUI () {
+		window = new UIObject([new Rectangle( -1, -1, 320, 240)], 0xFFCCCCCC, 0xFF666666);
+		
 		zoomOutButton = new Button([new Rectangle( -1, -1, 16, 16)], 0xFF999999, 0xFF666666);
 		zoomOutButton.setText("-", 0, 7);
-		zoomOutButton.alpha = 0.5;
+		zoomOutButton.x = zoomOutButton.y = 8;
 		
 		zoomInButton = new Button([new Rectangle( -1, -1, 16, 16)], 0xFF999999, 0xFF666666);
 		zoomInButton.setText("+", 0, 7);
@@ -137,6 +147,7 @@ class ArtEditor extends Sprite {
 		saveButton.x = clearButton.x;
 		saveButton.y = clearButton.y + clearButton.height + 2;
 		
+		addChild(window);
 		addChild(zoomInButton);
 		addChild(zoomOutButton);
 		addChild(clearButton);

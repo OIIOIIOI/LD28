@@ -22,6 +22,6 @@
 	<assets path="assets/fonts" include="*.ttf" rename="fonts" />
 	
 	<app swf-version="11.3"/>
-	<haxeflag name="-D extLoad" />
+	<!--<haxeflag name="-D extLoad" />-->
 	
 </project>

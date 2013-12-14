@@ -26,10 +26,11 @@ class PFGame extends Game {
 	var enemies:Array<PFEnemy>;
 	
 	#if extLoad
-	public function new (data:BitmapData, debug:Array<String>) {
+	public function new (data:BitmapData, debug:Array<String>)
 	#else
-	public function new (data:BitmapData) {
+	public function new (data:BitmapData)
 	#end
+	{
 		super();
 		// Parse game data
 		sprites = data;
@@ -53,10 +54,11 @@ class PFGame extends Game {
 	}
 	
 	#if extLoad
-	function setupLevel (debug:Array<String>) {
+	function setupLevel (debug:Array<String>)
 	#else
-	function setupLevel () {
+	function setupLevel ()
 	#end
+	{
 		level = new PFLevel();
 		//level.generateCrap();
 		#if extLoad
@@ -69,7 +71,7 @@ class PFGame extends Game {
 		addChild(b);
 	}
 	
-	function clean () {
+	public function clean () {
 		if (contains(hero.sprite))	removeChild(hero.sprite);
 		hero = null;
 		while (enemies.length > 0) {
