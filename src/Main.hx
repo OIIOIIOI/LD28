@@ -124,9 +124,9 @@ class Main extends Sprite {
 		
 		new ArtEditor(startData);
 		ArtEditor.instance.x = ArtEditor.instance.y = 100;
-		ArtEditor.instance.edit(Art.Block);*/
+		ArtEditor.instance.edit(Art.Hero);*/
 		
-		startMode(Mode.Title);
+		startMode(Mode.ArtEdit);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -172,8 +172,8 @@ class Main extends Sprite {
 			case Mode.Desktop:
 				screen = new DesktopScreen();
 			/*case Mode.ArtEdit:
-				addChild(ArtEditor.instance);
-			case Mode.PlayTest:
+				addChild(ArtEditor.instance);*/
+			/*case Mode.PlayTest:
 				#if extLoad
 				playGame = new PFGame(ArtEditor.instance.data, debug);
 				#else

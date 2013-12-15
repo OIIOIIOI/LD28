@@ -9,6 +9,7 @@ import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.ui.Keyboard;
 import haxe.Timer;
+import music.MusicTest2.SndObj;
 import openfl.Assets;
 
 
@@ -19,7 +20,7 @@ import openfl.Assets;
 
 class MusicTest2 extends Sprite {
 	
-	public static var TOLERANCE_BEFORE:Int = 50;//ms
+	public static var TOLERANCE_BEFORE:Int = 85;//ms
 	public static var TOLERANCE_AFTER:Int = 100;//ms
 	
 	var trackA:Sound;
@@ -36,12 +37,17 @@ class MusicTest2 extends Sprite {
 	
 	var keys:Map<Int, Key>;
 	
+	var spamMode:Bool;
+	var spamCount:Int;
+	
 	public function new () {
 		super();
 		
 		x = 400;
 		y = 400;
 		scale = 10;
+		
+		spamMode = false;
 		
 		trackA = Assets.getSound("snd/lead.wav");
 		trackB = Assets.getSound("snd/playback.wav");
@@ -92,10 +98,16 @@ class MusicTest2 extends Sprite {
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 	}
 	
+	//var losing:Bool;
+	
 	function update (e:Event) {
 		while (trackASC.position > seq[part].prevTotal && part < seq.length - 1) {
 			part++;
-			Timer.delay(checkAction, TOLERANCE_AFTER);
+			//trace("NOW PART " + part + ": " + trackASC.position + " / " + seq[part]);
+			//losing = true;
+			//Timer.delay(checkAction, TOLERANCE_AFTER);
+			//Timer.delay(failAction, TOLERANCE_AFTER + 5);
+			//if (spamMode)	setSpamMode(false);
 		}
 		var ratio = (trackASC.position - seq[part].prevTotal) / seq[part].length;
 		var newY = ratio * (seq[part].length / scale) + seq[part].prevTotal / scale;
@@ -106,27 +118,25 @@ class MusicTest2 extends Sprite {
 		}
 	}
 	
-	function checkAction () {
-		var k = switch (seq[part - 1].inst) {
-			case 0:		Keyboard.LEFT;
-			case 1:		Keyboard.DOWN;
-			default:	Keyboard.RIGHT;
-		}
-		var ld = keys.get(k).lastDown;
-		var lu = keys.get(k).lastUp;
-		var max = Timer.stamp() * 1000;
-		var min = max - TOLERANCE_AFTER - TOLERANCE_BEFORE;
-		//
-		if (min < ld && lu < max) {
+	/*function failAction () {
+		feedback(false);
+	}*/
+	
+	/*function feedback (good:Bool = true, force:Bool = false) {
+		//if (seq[part - 1].result != 0 && !force)	return;
+		if (good)	seq[part - 1].result = 1;
+		else		seq[part - 1].result = -1;
+		//trace((part - 1) + " is " + seq[part - 1].result);
+		
+		if (good) {
 			trackASC.soundTransform = new SoundTransform(0.5);
-			feedback();
+			if (part > 0 && seq[part - 1].type == 1) {
+				setSpamMode();
+			}
 		} else {
 			trackASC.soundTransform = new SoundTransform(0);
-			feedback(false);
 		}
-	}
-	
-	function feedback (good:Bool = true) {
+		//
 		head.graphics.clear();
 		head.graphics.beginFill(0x000000);
 		head.graphics.drawRect(-20, -1, 340, 2);
@@ -136,14 +146,17 @@ class MusicTest2 extends Sprite {
 		head.graphics.drawCircle(-30, 0, 10);
 		head.graphics.drawCircle(350, 0, 10);
 		head.graphics.endFill();
-	}
+	}*/
 	
 	function keyDownHandler (e:KeyboardEvent) {
 		if (keys.exists(e.keyCode)) {
 			if (!keys.get(e.keyCode).down) {
 				keys.get(e.keyCode).down = true;
 				keys.get(e.keyCode).justChanged = true;
-				keys.get(e.keyCode).lastDown = Timer.stamp() * 1000;
+				//keys.get(e.keyCode).lastDown = Timer.stamp() * 1000;
+				keys.get(e.keyCode).lastDown = trackASC.position;
+				//trace("KEY DOWN " + e.keyCode + ": " + keys.get(e.keyCode).lastDown);
+				//checkFree(e.keyCode);
 			}
 		}
 	}
@@ -152,9 +165,63 @@ class MusicTest2 extends Sprite {
 		if (keys.exists(e.keyCode)) {
 			keys.get(e.keyCode).down = false;
 			keys.get(e.keyCode).justChanged = false;
-			keys.get(e.keyCode).lastUp = Timer.stamp() * 1000;
+			//keys.get(e.keyCode).lastUp = Timer.stamp() * 1000;
+			keys.get(e.keyCode).lastUp = trackASC.position;
+			//trace("KEY UP " + e.keyCode + ": " + keys.get(e.keyCode).lastUp);
 		}
 	}
+	
+	/*function checkFree (k:Int) {
+		if (part > 0) {
+			trace(seq[part - 1].inst);
+		}
+		//
+		if (!spamMode) {
+			var t = keys.get(k).lastDown;
+			//var before = 0.0;
+			//var after = 0.0;
+			var snd:SndObj;
+			if (part > 0) {
+				trace("checking part-1: " + (part - 1) + " / is t > snd.prevTotal + snd.length - TOLERANCE_BEFORE ?");
+				snd = seq[part - 1];
+				if (snd.prevTotal + snd.length - TOLERANCE_BEFORE < t) {
+					trace("yes");
+				} else {
+					trace("no");
+				}
+			}
+			trace("checking part: " + part + " / is t < snd.prevTotal + TOLERANCE_AFTER ?");
+			snd = seq[part];
+			if (t < snd.prevTotal + TOLERANCE_AFTER) {
+				trace("yes");
+			} else {
+				trace("no");
+			}
+			trace("-------------------------");
+			for (snd in seq) {
+				after = snd.prevTotal + TOLERANCE_AFTER;
+				if (before < t && t < after) {
+					trace("found " + snd.index + " / " + part);
+					feedback();
+					return;
+				}
+				before = snd.prevTotal + snd.length - TOLERANCE_BEFORE;
+			}
+			//feedback(false, true);
+		} else {
+			spamCount++;
+		}
+	}*/
+	
+	/*function setSpamMode (activate:Bool = true) {
+		spamMode = activate;
+		if (activate) {
+			trace("SPAM MODE: " + spamMode);
+			spamCount = 0;
+		} else {
+			trace("count: " + spamCount);
+		}
+	}*/
 	
 	function draw () {
 		var yy:Float = 0;
@@ -199,12 +266,15 @@ typedef Key = {
 
 class SndObj {
 	
+	//static public var mini:Float = 999999;
+	
 	public var index:Int;
 	public var length:Float;
 	public var prevTotal:Float;
 	public var pos:Float;
 	public var inst:Int;
 	public var type:Int;
+	public var result:Int;
 	
 	public function new (i:Int, s:String) {
 		index = i;
@@ -213,6 +283,13 @@ class SndObj {
 		length = Std.parseFloat(a[0]);
 		inst = Std.parseInt(a[1]);
 		type = Std.parseInt(a[2]);
+		result = 0;
+		//
+		//if (length < mini)	mini = length;
+	}
+	
+	public function toString () :String {
+		return "index:" + index + ", length:" + length + ", prevTotal:" + prevTotal + ", inst:" + inst + ", type:" + type + ", result:" + result;
 	}
 	
 }
