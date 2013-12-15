@@ -19,8 +19,8 @@ import openfl.Assets;
 
 class MusicTest2 extends Sprite {
 	
-	public static var TOLERANCE_BEFORE:Int = 60;//ms
-	public static var TOLERANCE_AFTER:Int = 90;//ms
+	public static var TOLERANCE_BEFORE:Int = 50;//ms
+	public static var TOLERANCE_AFTER:Int = 100;//ms
 	
 	var trackA:Sound;
 	var trackASC:SoundChannel;
@@ -40,20 +40,19 @@ class MusicTest2 extends Sprite {
 		super();
 		
 		x = 400;
-		y = 100;
+		y = 400;
 		scale = 10;
 		
 		trackA = Assets.getSound("snd/lead.wav");
 		trackB = Assets.getSound("snd/playback.wav");
 		
-		var a = Assets.getText("snd/track.txt").split(",");
-		a.splice(55, 1);// TODO remove this
+		var a = Assets.getText("snd/track2.txt").split(";");
 		
 		seq = new Array();
 		
 		var total = 0.0;
 		for (i in 0...a.length) {
-			var so = new SndObj(i, Std.parseFloat(a[i]));
+			var so = new SndObj(i, a[i]);
 			so.prevTotal = total;
 			seq.push(so);
 			total += so.length;
@@ -67,7 +66,7 @@ class MusicTest2 extends Sprite {
 		
 		head = new Sprite();
 		head.graphics.beginFill(0x000000);
-		head.graphics.drawRect(-1, 0, 2, 120);
+		head.graphics.drawRect(-20, -1, 340, 2);
 		head.graphics.endFill();
 		addChild(head);
 		
@@ -79,12 +78,14 @@ class MusicTest2 extends Sprite {
 	function registerKeys () {
 		if (keys != null)	return;
 		keys = new Map<Int, Key>();
-		keys.set(Keyboard.NUMPAD_0, { down:false, justChanged:false, lastDown:0, lastUp:0 });
+		keys.set(Keyboard.LEFT, { down:false, justChanged:false, lastDown:0, lastUp:0 });
+		keys.set(Keyboard.DOWN, { down:false, justChanged:false, lastDown:0, lastUp:0 });
+		keys.set(Keyboard.RIGHT, { down:false, justChanged:false, lastDown:0, lastUp:0 });
 	}
 	
 	function play () {
 		trackASC = trackA.play(0, 0, new SoundTransform(0));
-		trackB.play(0, 0, new SoundTransform(0.1));
+		trackB.play(0, 0, new SoundTransform(0.5));
 		//
 		addEventListener(Event.ENTER_FRAME, update);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -97,8 +98,8 @@ class MusicTest2 extends Sprite {
 			Timer.delay(checkAction, TOLERANCE_AFTER);
 		}
 		var ratio = (trackASC.position - seq[part].prevTotal) / seq[part].length;
-		var newX = ratio * (seq[part].length / scale) + seq[part].prevTotal / scale;
-		track.x = -newX;
+		var newY = ratio * (seq[part].length / scale) + seq[part].prevTotal / scale;
+		track.y = newY;
 		//
 		for (k in keys) {
 			k.justChanged = false;
@@ -106,12 +107,18 @@ class MusicTest2 extends Sprite {
 	}
 	
 	function checkAction () {
-		var ld = keys.get(Keyboard.NUMPAD_0).lastDown;
+		var k = switch (seq[part - 1].inst) {
+			case 0:		Keyboard.LEFT;
+			case 1:		Keyboard.DOWN;
+			default:	Keyboard.RIGHT;
+		}
+		var ld = keys.get(k).lastDown;
+		var lu = keys.get(k).lastUp;
 		var max = Timer.stamp() * 1000;
 		var min = max - TOLERANCE_AFTER - TOLERANCE_BEFORE;
-		//trace(min < ld && ld < max);
-		if (min < ld && ld < max) {
-			trackASC.soundTransform = new SoundTransform(0.1);
+		//
+		if (min < ld && lu < max) {
+			trackASC.soundTransform = new SoundTransform(0.5);
 			feedback();
 		} else {
 			trackASC.soundTransform = new SoundTransform(0);
@@ -122,12 +129,12 @@ class MusicTest2 extends Sprite {
 	function feedback (good:Bool = true) {
 		head.graphics.clear();
 		head.graphics.beginFill(0x000000);
-		head.graphics.drawRect(-1, 0, 2, 120);
+		head.graphics.drawRect(-20, -1, 340, 2);
 		head.graphics.endFill();
 		if (good)	head.graphics.beginFill(0x00FF00);
 		else		head.graphics.beginFill(0xFF0000);
-		head.graphics.drawCircle(0, -10, 10);
-		head.graphics.drawCircle(0, 130, 10);
+		head.graphics.drawCircle(-30, 0, 10);
+		head.graphics.drawCircle(350, 0, 10);
 		head.graphics.endFill();
 	}
 	
@@ -150,28 +157,34 @@ class MusicTest2 extends Sprite {
 	}
 	
 	function draw () {
-		var xx:Float = 0;
+		var yy:Float = 0;
 		for (snd in seq) {
-			var w = snd.length / scale;
+			var h = snd.length / scale;
 			var s = new Sprite();
 			var c = switch (snd.inst) {
 				case 0:		0xCC9900;
 				case 1:		0x00CC00;
 				default:	0x0099CC;
 			}
-			s.graphics.beginFill(c, 0.2);
-			s.graphics.drawRect(0, 0, w, 40);
-			s.graphics.endFill();
-			s.graphics.beginFill(c);
-			s.graphics.drawRect(0, 0, 4, 40);
-			s.graphics.endFill();
-			s.x = xx;
-			s.y = snd.inst * s.height;
+			if (snd.type == 0) {
+				s.graphics.beginFill(c, 0.2);
+				s.graphics.drawRect(0, 0, 100, -h);
+				s.graphics.endFill();
+				s.graphics.beginFill(c);
+				s.graphics.drawRect(0, 0, 100, -4);
+				s.graphics.endFill();
+			} else {
+				s.graphics.beginFill(c, 1);
+				s.graphics.drawRect(0, 0, 100, -h);
+				s.graphics.endFill();
+			}
+			s.x = snd.inst * s.width;
+			s.y = -yy;
 			track.addChild(s);
 			//
-			snd.posX = xx;
+			snd.pos = yy;
 			// Inc
-			xx += w;
+			yy += h;
 		}
 	}
 	
@@ -189,14 +202,17 @@ class SndObj {
 	public var index:Int;
 	public var length:Float;
 	public var prevTotal:Float;
-	public var posX:Float;
+	public var pos:Float;
 	public var inst:Int;
+	public var type:Int;
 	
-	public function new (i:Int, l:Float) {
+	public function new (i:Int, s:String) {
 		index = i;
-		length = l;
 		//
-		inst = Std.random(3);
+		var a = s.split(',');
+		length = Std.parseFloat(a[0]);
+		inst = Std.parseInt(a[1]);
+		type = Std.parseInt(a[2]);
 	}
 	
 }

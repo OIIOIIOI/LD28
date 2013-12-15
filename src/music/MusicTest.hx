@@ -22,28 +22,28 @@ class MusicTest extends Sprite {
 	public function new () {
 		super();
 		
-		x = y = 0;
-		scale = 20;
+		//x = y = 0;
+		//scale = 20;
 		
 		seq = new Array();
-		for (i in 1...77) {
+		for (i in 62...63) {
 			seq.push(new SoundObj("snd/" + i + ".wav", 0));
-			//trace(i + ": " + seq[seq.length - 1].url + "\t\t" + seq[seq.length - 1].sound.length + ",");
+			trace(i + ": " + seq[seq.length - 1].url + "\t\t" + seq[seq.length - 1].sound.length + ",");
 		}
 		
-		draw();
+		//draw();
 		
-		index = 0;
+		//index = 0;
 		
-		head = new Head();
-		addChild(head);
+		//head = new Head();
+		//addChild(head);
 		
 		//addEventListener(Event.ENTER_FRAME, update);
 		
 		//Timer.delay(play, 3000);
 	}
 	
-	function update (e:Event) {
+	/*function update (e:Event) {
 		head.update();
 	}
 	
@@ -84,7 +84,7 @@ class MusicTest extends Sprite {
 			// Inc
 			xx += w;
 		}
-	}
+	}*/
 	
 }
 
