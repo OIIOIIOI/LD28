@@ -20,7 +20,8 @@ import openfl.Assets;
 class UIObject extends Sprite {
 	
 	var frames:Array<Rectangle>;
-	var current:Int;
+	public var current:Int;
+	
 	var data:BitmapData;
 	var dataB:Bitmap;
 	
@@ -29,7 +30,7 @@ class UIObject extends Sprite {
 	static public var FORMAT:TextFormat;
 	static public var FORMAT_LEFT:TextFormat;
 	
-	public function new (frames:Array<Rectangle>, bg:UInt = 0, border:UInt = 0) {
+	public function new (frames:Array<Rectangle>, bg:UInt = 0xFF999999, border:UInt = 0xFF666666) {
 		super();
 		
 		if (FONT == null)	FONT = Assets.getFont("fonts/lucon.ttf");
@@ -50,14 +51,14 @@ class UIObject extends Sprite {
 		else render();
 		
 		dataB = new Bitmap(data);
-		dataB.scaleX = dataB.scaleY = 2;
+		//dataB.scaleX = dataB.scaleY = 2;
 		addChild(dataB);
 		
 		mouseChildren = false;
 		addEventListener(MouseEvent.RIGHT_CLICK, rightClickHandler);
 	}
 	
-	function render () {
+	public function render () {
 		Main.TAP.x = Main.TAP.y = 0;
 		data.copyPixels(Main.UI_ATLAS, frames[current], Main.TAP);
 	}
@@ -83,4 +84,22 @@ class UIObject extends Sprite {
 		e.preventDefault();
 	}
 	
+	public static function getEmptyFrames (w:Int, h:Int, n:Int = 1) :Array<Rectangle> {
+		var f = new Array<Rectangle>();
+		for (i in 0...n) {
+			f.push(new Rectangle(-1, -1, w, h));
+		}
+		return f;
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+

@@ -89,6 +89,7 @@ class ArtEditor extends Sprite {
 	
 	// TODO Brush size, brush color (palettes)
 	// TODO Asset selection
+	// TODO Try different resolutions
 	
 	// Select the asset to edit
 	public function edit (art:Art) {
@@ -136,23 +137,23 @@ class ArtEditor extends Sprite {
 	var saveButton:Button;
 	
 	function setupUI () {
-		window = new UIObject([new Rectangle( -1, -1, 320, 240)], 0xFFCCCCCC, 0xFF666666);
+		window = new UIObject([new Rectangle( -1, -1, 640, 480)], 0xFFCCCCCC, 0xFF666666);
 		
-		zoomOutButton = new Button([new Rectangle( -1, -1, 16, 16)], 0xFF999999, 0xFF666666);
+		zoomOutButton = new Button([new Rectangle( -1, -1, 32, 32)]);
 		zoomOutButton.setText("-", 0, 7);
 		zoomOutButton.x = zoomOutButton.y = 8;
 		
-		zoomInButton = new Button([new Rectangle( -1, -1, 16, 16)], 0xFF999999, 0xFF666666);
+		zoomInButton = new Button([new Rectangle( -1, -1, 32, 32)]);
 		zoomInButton.setText("+", 0, 7);
 		zoomInButton.x = zoomOutButton.x + zoomOutButton.width + 2;
 		zoomInButton.y = zoomOutButton.y;
 		
-		clearButton = new Button([new Rectangle( -1, -1, 33, 16)], 0xFF999999, 0xFF666666);
+		clearButton = new Button([new Rectangle( -1, -1, 66, 32)]);
 		clearButton.setText("clear", 0, 7);
 		clearButton.x = zoomOutButton.x;
 		clearButton.y = zoomOutButton.y + zoomOutButton.height + 2;
 		
-		saveButton = new Button([new Rectangle( -1, -1, 33, 16)], 0xFF999999, 0xFF666666);
+		saveButton = new Button([new Rectangle( -1, -1, 66, 32)]);
 		saveButton.setText("save", 0, 7);
 		saveButton.x = clearButton.x;
 		saveButton.y = clearButton.y + clearButton.height + 2;

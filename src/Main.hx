@@ -34,6 +34,7 @@ class Main extends Sprite {
 	
 	var mode:Mode;
 	
+	var skills:Skills;
 	var artEditor:ArtEditor;
 	var playGame:PFGame;
 	
@@ -83,6 +84,8 @@ class Main extends Sprite {
 		
 		setupUI();
 		
+		skills = new Skills();
+		
 		var startData:BitmapData = new BitmapData(128, 128, true, 0x00FF00FF);
 		startData.setPixel32(0, 0, 0xFFFFFFFF);
 		startData.setPixel32(1, 0, 0xFFFFFFFF);
@@ -92,7 +95,7 @@ class Main extends Sprite {
 		artEditor.x = artEditor.y = 100;
 		artEditor.edit(Art.Block);
 		
-		startMode(Mode.Desktop);
+		startMode(Mode.Intro);
 	}
 	
 	//{ ---- UI ----
@@ -100,11 +103,11 @@ class Main extends Sprite {
 	var playButton:Button;
 	
 	function setupUI () {
-		editorButton = new Button([new Rectangle(-1, -1, 20, 20)], 0xFF999999, 0xFF666666);
+		editorButton = new Button([new Rectangle(-1, -1, 40, 40)]);
 		editorButton.setText("Art", 0, 0);
 		editorButton.x = editorButton.y = 8;
 		
-		playButton = new Button([new Rectangle(-1, -1, 20, 20)], 0xFF999999, 0xFF666666);
+		playButton = new Button([new Rectangle(-1, -1, 40, 40)]);
 		playButton.setText("Play", 0, 0);
 		playButton.x = 8;
 		playButton.y = 64;
@@ -127,6 +130,8 @@ class Main extends Sprite {
 	
 	function closeMode () {
 		switch (mode) {
+			case Mode.Intro:
+				if (contains(skills))	removeChild(skills);
 			case Mode.ArtEdit:
 				if (contains(artEditor))	removeChild(artEditor);
 			case Mode.PlayTest:
@@ -143,6 +148,8 @@ class Main extends Sprite {
 		if (mode != null)	closeMode();
 		// Start new mode
 		switch (m) {
+			case Mode.Intro:
+				addChild(skills);
 			case Mode.ArtEdit:
 				addChild(artEditor);
 			case Mode.PlayTest:
@@ -167,6 +174,7 @@ class Main extends Sprite {
 }
 
 enum Mode {
+	Intro;
 	Desktop;
 	CodeEdit;
 	ArtEdit;
