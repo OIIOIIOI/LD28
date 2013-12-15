@@ -21,7 +21,7 @@ import flash.text.TextFormatAlign;
 import game.Game;
 import game.Level;
 import game.PFGame;
-import music.MusicTest;
+import music.MusicTest2;
 import openfl.Assets;
 import screens.DesktopScreen;
 import screens.Screen;
@@ -66,7 +66,7 @@ class Main extends Sprite {
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 		//Lib.current.addChild(new Main());
-		Lib.current.addChild(new MusicTest());
+		Lib.current.addChild(new MusicTest2());
 	}
 	
 	#if extLoad

@@ -28,6 +28,7 @@ class MusicTest extends Sprite {
 		seq = new Array();
 		for (i in 1...77) {
 			seq.push(new SoundObj("snd/" + i + ".wav", 0));
+			//trace(i + ": " + seq[seq.length - 1].url + "\t\t" + seq[seq.length - 1].sound.length + ",");
 		}
 		
 		draw();
@@ -37,9 +38,9 @@ class MusicTest extends Sprite {
 		head = new Head();
 		addChild(head);
 		
-		addEventListener(Event.ENTER_FRAME, update);
+		//addEventListener(Event.ENTER_FRAME, update);
 		
-		Timer.delay(play, 3000);
+		//Timer.delay(play, 3000);
 	}
 	
 	function update (e:Event) {
@@ -89,11 +90,13 @@ class MusicTest extends Sprite {
 
 class SoundObj {
 	
+	public var url:String;
 	public var sound:Sound;
 	public var instru:Int;
 	public var x:Float;
 	
 	public function new (src:String, inst:Int) {
+		url = src;
 		sound = Assets.getSound(src);
 		instru = inst;
 	}
