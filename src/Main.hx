@@ -1,6 +1,7 @@
 package ;
 
 import art.ArtEditor;
+import Clock;
 import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.display.Sprite;
@@ -14,11 +15,22 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
+import flash.text.Font;
+import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
 import game.Game;
 import game.Level;
 import game.PFGame;
+import music.MusicTest;
 import openfl.Assets;
+import screens.DesktopScreen;
+import screens.Screen;
+import screens.SkillSetupScreen;
+import screens.TimeSetupScreen;
+import screens.TitleScreen;
+import screens.WaitingScreen;
 import ui.Button;
+import ui.Scene;
 
 /**
  * ...
@@ -33,10 +45,17 @@ class Main extends Sprite {
 	public static var UI_ATLAS:BitmapData;
 	public static var LEVELS:BitmapData;
 	
-	var mode:Mode;
+	public static var AMATIC:Font;
+	public static var AMATIC_BOLD:Font;
+	public static var FORMAT:TextFormat;
+	public static var FORMAT_BOLD:TextFormat;
 	
-	var skills:Skills;
-	var artEditor:ArtEditor;
+	public static var instance:Main;
+	
+	public var scene:Scene;
+	var mode:Mode;
+	var screen:Screen;
+	
 	var playGame:PFGame;
 	
 	#if extLoad
@@ -46,12 +65,16 @@ class Main extends Sprite {
 	public static function main () {
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-		Lib.current.addChild(new Main());
+		//Lib.current.addChild(new Main());
+		Lib.current.addChild(new MusicTest());
 	}
 	
 	#if extLoad
 	public function new () {
 		super();
+		
+		instance = this:
+		
 		trace("extLoad");
 		var l:URLLoader = new URLLoader();
 		l.addEventListener(Event.COMPLETE, txtCompleteHandler);
@@ -72,6 +95,9 @@ class Main extends Sprite {
 	#else
 	public function new () {
 		super();
+		
+		instance = this;
+		
 		init();
 	}
 	#end
@@ -83,70 +109,44 @@ class Main extends Sprite {
 		LEVELS = Assets.getBitmapData("img/levels.png");
 		#end
 		
-		setupUI();
+		setupTextStuff();
 		
-		skills = new Skills();
+		scene = new Scene();
+		addChild(scene);
 		
-		switch (skills.artLevel) {
-			case 3:
-				Level.GRID_SIZE = 16;
-				Level.SCALE = 2;
-			default:
-				Level.GRID_SIZE = 32;
-				Level.SCALE = 1;
-		}
-		
-		var startData:BitmapData = new BitmapData(128, 128, true, 0x00FF00FF);
+		/*var startData:BitmapData = new BitmapData(128, 128, true, 0x00FF00FF);
 		startData.setPixel32(0, 0, 0xFFFFFFFF);
 		startData.setPixel32(1, 0, 0xFFFFFFFF);
 		startData.setPixel32(2, 0, 0xFFFFFFFF);
 		startData.setPixel32(3, 0, 0xFFFFFFFF);
 		
-		artEditor = new ArtEditor(startData);
-		artEditor.x = artEditor.y = 100;
-		artEditor.edit(Art.Block);
+		new ArtEditor(startData);
+		ArtEditor.instance.x = ArtEditor.instance.y = 100;
+		ArtEditor.instance.edit(Art.Block);*/
 		
-		startMode(Mode.Desktop);
+		startMode(Mode.Title);
+		
+		addEventListener(Event.ENTER_FRAME, update);
 	}
 	
-	//{ ---- UI ----
-	var editorButton:Button;
-	var playButton:Button;
-	
-	function setupUI () {
-		editorButton = new Button([new Rectangle(-1, -1, 40, 40)]);
-		editorButton.setText("Art", 0, 0);
-		editorButton.x = editorButton.y = 8;
+	function setupTextStuff () {
+		AMATIC = Assets.getFont("fonts/amatic.ttf");
+		AMATIC_BOLD = Assets.getFont("fonts/amaticbold.ttf");
 		
-		playButton = new Button([new Rectangle(-1, -1, 40, 40)]);
-		playButton.setText("Play", 0, 0);
-		playButton.x = 8;
-		playButton.y = 64;
-		
-		addChild(editorButton);
-		addChild(playButton);
-		
-		editorButton.addEventListener(MouseEvent.CLICK, clickHandler);
-		playButton.addEventListener(MouseEvent.CLICK, clickHandler);
-	}
-	//}
-	
-	function clickHandler (e:MouseEvent) {
-		if (e.currentTarget == editorButton) {
-			startMode(Mode.ArtEdit);
-		} else if (e.currentTarget == playButton) {
-			startMode(Mode.PlayTest);
-		}
+		FORMAT = new TextFormat(AMATIC.fontName, 32, 0xFF55555F);
+		FORMAT.align = TextFormatAlign.CENTER;
+		FORMAT_BOLD = new TextFormat(AMATIC_BOLD.fontName, 36, 0xFF55555F);
+		FORMAT_BOLD.align = TextFormatAlign.CENTER;
 	}
 	
 	function closeMode () {
+		// Clear screen
+		scene.clearScreen();
+		// Mode specific
 		switch (mode) {
-			case Mode.Intro:
-				if (contains(skills))	removeChild(skills);
 			case Mode.ArtEdit:
-				if (contains(artEditor))	removeChild(artEditor);
+				if (contains(ArtEditor.instance))	removeChild(ArtEditor.instance);
 			case Mode.PlayTest:
-				removeEventListener(Event.ENTER_FRAME, update);
 				if (contains(playGame))	removeChild(playGame);
 				playGame.clean();
 				playGame = null;
@@ -154,44 +154,66 @@ class Main extends Sprite {
 		}
 	}
 	
-	function startMode (m:Mode) {
+	public function startMode (m:Mode) {
 		// Close previous mode
 		if (mode != null)	closeMode();
 		// Start new mode
 		switch (m) {
-			case Mode.Intro:
-				addChild(skills);
-			case Mode.ArtEdit:
-				addChild(artEditor);
+			case Mode.Title:
+				screen = new TitleScreen();
+			case Mode.TimeSetup:
+				screen = new TimeSetupScreen();
+			case Mode.SkillSetup:
+				screen = new SkillSetupScreen();
+			case Mode.Waiting:
+				screen = new WaitingScreen();
+			case Mode.Desktop:
+				screen = new DesktopScreen();
+			/*case Mode.ArtEdit:
+				addChild(ArtEditor.instance);
 			case Mode.PlayTest:
 				#if extLoad
-				playGame = new PFGame(artEditor.data, debug);
+				playGame = new PFGame(ArtEditor.instance.data, debug);
 				#else
-				playGame = new PFGame(artEditor.data);
+				playGame = new PFGame(ArtEditor.instance.data);
 				#end
 				playGame.scaleX = playGame.scaleY = Level.SCALE;
 				playGame.x = 140;
 				playGame.y = 120;
-				addChild(playGame);
-				addEventListener(Event.ENTER_FRAME, update);
+				addChild(playGame);*/
 			default:
 		}
 		mode = m;
+		if (screen != null)	scene.changeScreen(screen);
 	}
 	
 	function update (e:Event) {
-		playGame.update();
+		// Scene update
+		scene.update();
+		// Time
+		if (Clock.instance != null)	Clock.instance.update();
+		// Mode specific
+		/*switch (mode) {
+			case Mode.PlayTest:
+				playGame.update();
+			default:
+		}*/
 	}
 	
 }
 
 enum Mode {
-	Intro;
+	Title;
+	TimeSetup;
+	SkillSetup;
+	Waiting;
 	Desktop;
 	CodeEdit;
 	ArtEdit;
 	MusicEdit;
 	PlayTest;
+	Submit;
+	End;
 }
 
 

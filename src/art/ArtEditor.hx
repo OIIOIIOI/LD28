@@ -84,7 +84,7 @@ class ArtEditor extends Sprite {
 		canvas = new Sprite();
 		addChild(canvas);
 		
-		canvas.addEventListener(MouseEvent.MOUSE_DOWN, downHandler);
+		canvas.addEventListener(MouseEvent.MOUSE_DOWN, downHandler, false, 0, true);
 	}
 	
 	// TODO Brush size, brush color (palettes)
@@ -136,23 +136,23 @@ class ArtEditor extends Sprite {
 	var saveButton:Button;
 	
 	function setupUI () {
-		window = new UIObject([new Rectangle( -1, -1, 640, 480)], 0xFFCCCCCC, 0xFF666666);
+		window = new UIObject(UIObject.getEmptyFrames(640, 480), 0xFFCCCCCC, 0xFF666666);
 		
-		zoomOutButton = new Button([new Rectangle( -1, -1, 32, 32)]);
+		zoomOutButton = new Button(UIObject.getEmptyFrames(32, 32));
 		zoomOutButton.setText("-", 0, 7);
 		zoomOutButton.x = zoomOutButton.y = 8;
 		
-		zoomInButton = new Button([new Rectangle( -1, -1, 32, 32)]);
+		zoomInButton = new Button(UIObject.getEmptyFrames(32, 32));
 		zoomInButton.setText("+", 0, 7);
 		zoomInButton.x = zoomOutButton.x + zoomOutButton.width + 2;
 		zoomInButton.y = zoomOutButton.y;
 		
-		clearButton = new Button([new Rectangle( -1, -1, 66, 32)]);
+		clearButton = new Button(UIObject.getEmptyFrames(66, 32));
 		clearButton.setText("clear", 0, 7);
 		clearButton.x = zoomOutButton.x;
 		clearButton.y = zoomOutButton.y + zoomOutButton.height + 2;
 		
-		saveButton = new Button([new Rectangle( -1, -1, 66, 32)]);
+		saveButton = new Button(UIObject.getEmptyFrames(66, 32));
 		saveButton.setText("save", 0, 7);
 		saveButton.x = clearButton.x;
 		saveButton.y = clearButton.y + clearButton.height + 2;
@@ -163,10 +163,10 @@ class ArtEditor extends Sprite {
 		addChild(clearButton);
 		addChild(saveButton);
 		
-		zoomInButton.addEventListener(MouseEvent.CLICK, clickHandler);
-		zoomOutButton.addEventListener(MouseEvent.CLICK, clickHandler);
-		clearButton.addEventListener(MouseEvent.CLICK, clickHandler);
-		saveButton.addEventListener(MouseEvent.CLICK, clickHandler);
+		zoomInButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+		zoomOutButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+		clearButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+		saveButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
 	}
 	//}
 	

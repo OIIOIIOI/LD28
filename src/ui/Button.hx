@@ -9,8 +9,8 @@ import flash.geom.Rectangle;
 
 class Button extends UIObject {
 	
-	public function new (frames:Array<Rectangle>) {
-		super(frames);
+	public function new (frames:Array<Rectangle>, bg:UInt = 0xFF999999, border:UInt = 0xFF666666) {
+		super(frames, bg, border);
 		buttonMode = true;
 	}
 	
