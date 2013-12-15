@@ -48,22 +48,22 @@ class Skills extends Sprite {
 	function setupUI () {
 		window = new UIObject([new Rectangle( -1, -1, 640, 480)], 0xFFCCCCCC, 0xFF666666);
 		
-		pointsLabel = new UIObject(UIObject.getEmptyFrames(200, 24));
+		pointsLabel = new UIObject(UIObject.getEmptyFrames(160, 24));
 		pointsLabel.x = pointsLabel.y = 8;
 		
-		codeSkill = new Skill("Code level: ");
+		codeSkill = new Skill("Code mastery: ");
 		codeSkill.x = pointsLabel.x;
 		codeSkill.y = pointsLabel.y + pointsLabel.height + 4;
 		
-		artSkill = new Skill("Art level: ");
+		artSkill = new Skill("Artistic vibe: ");
 		artSkill.x = codeSkill.x;
 		artSkill.y = codeSkill.y + codeSkill.height + 4;
 		
-		musicSkill = new Skill("Music level: ");
+		musicSkill = new Skill("Music writing : ");
 		musicSkill.x = codeSkill.x;
 		musicSkill.y = artSkill.y + artSkill.height + 4;
 		
-		orgaSkill = new Skill("Orga level: ");
+		orgaSkill = new Skill("Time management: ");
 		orgaSkill.x = codeSkill.x;
 		orgaSkill.y = musicSkill.y + musicSkill.height + 4;
 		

@@ -23,7 +23,7 @@ class Skill extends Sprite {
 	public function new (text:String) {
 		super();
 		
-		label = new UIObject(UIObject.getEmptyFrames(120, 24));
+		label = new UIObject(UIObject.getEmptyFrames(160, 24));
 		label.setText(text, 0, 4);
 		
 		lessButton = new Button(UIObject.getEmptyFrames(24, 24));

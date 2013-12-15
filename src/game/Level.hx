@@ -12,6 +12,7 @@ class Level {
 	static public var WIDTH:Int = 20;
 	static public var HEIGHT:Int = 15;
 	static public var GRID_SIZE:Int = 32;
+	static public var SCALE:Int = 1;
 	
 	static public var C_VOID:UInt = 0xFFFFFF;
 	static public var C_SOLID:UInt = 0x000000;

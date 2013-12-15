@@ -15,6 +15,7 @@ import flash.Lib;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import game.Game;
+import game.Level;
 import game.PFGame;
 import openfl.Assets;
 import ui.Button;
@@ -86,16 +87,26 @@ class Main extends Sprite {
 		
 		skills = new Skills();
 		
+		switch (skills.artLevel) {
+			case 3:
+				Level.GRID_SIZE = 16;
+				Level.SCALE = 2;
+			default:
+				Level.GRID_SIZE = 32;
+				Level.SCALE = 1;
+		}
+		
 		var startData:BitmapData = new BitmapData(128, 128, true, 0x00FF00FF);
 		startData.setPixel32(0, 0, 0xFFFFFFFF);
 		startData.setPixel32(1, 0, 0xFFFFFFFF);
 		startData.setPixel32(2, 0, 0xFFFFFFFF);
+		startData.setPixel32(3, 0, 0xFFFFFFFF);
 		
 		artEditor = new ArtEditor(startData);
 		artEditor.x = artEditor.y = 100;
 		artEditor.edit(Art.Block);
 		
-		startMode(Mode.Intro);
+		startMode(Mode.Desktop);
 	}
 	
 	//{ ---- UI ----
@@ -158,6 +169,7 @@ class Main extends Sprite {
 				#else
 				playGame = new PFGame(artEditor.data);
 				#end
+				playGame.scaleX = playGame.scaleY = Level.SCALE;
 				playGame.x = 140;
 				playGame.y = 120;
 				addChild(playGame);

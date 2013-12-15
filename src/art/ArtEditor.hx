@@ -89,14 +89,13 @@ class ArtEditor extends Sprite {
 	
 	// TODO Brush size, brush color (palettes)
 	// TODO Asset selection
-	// TODO Try different resolutions
 	
 	// Select the asset to edit
 	public function edit (art:Art) {
 		current = art;
 		setCanvasSize(current);
-		addChild(assets.get(current));
 		applyZoom();
+		addChild(assets.get(current));
 	}
 	
 	// Reset the canvas to the correct size
@@ -123,7 +122,7 @@ class ArtEditor extends Sprite {
 		assets.get(current).x = canvas.x;
 		assets.get(current).y = canvas.y;
 		// Update UI
-		if (zoomLevel == 4)	zoomInButton.alpha = 0.5;
+		if (zoomLevel == 6)	zoomInButton.alpha = 0.5;
 		else				zoomInButton.alpha = 1;
 		if (zoomLevel == 1)	zoomOutButton.alpha = 0.5;
 		else				zoomOutButton.alpha = 1;
@@ -172,12 +171,10 @@ class ArtEditor extends Sprite {
 	//}
 	
 	function clickHandler (e:MouseEvent) {
-		if (e.currentTarget == zoomInButton && zoomLevel < 4) {
+		if (e.currentTarget == zoomInButton && zoomLevel < 6) {
 			// Zoom in
 			zoomLevel++;
 			applyZoom();
-			if (zoomLevel == 4)	zoomInButton.alpha = 0.5;
-			else				zoomInButton.alpha = 1;
 		} else if (e.currentTarget == zoomOutButton && zoomLevel > 1) {
 			// Zoom out
 			zoomLevel--;
@@ -190,11 +187,16 @@ class ArtEditor extends Sprite {
 		} else if (e.currentTarget == saveButton) {
 			// Clear previous version
 			data.fillRect(coords.get(current), 0x00FF00FF);
-			// Draw current version
+			// Matrix
 			Main.TAM.identity();
 			Main.TAM.translate(coords.get(current).x, coords.get(current).y);
-			data.draw(assets.get(current), Main.TAM);
-			// TODO avoid drawing out of the rect (erasing data line 0)
+			// Clip
+			Main.TAR.x = coords.get(current).x;
+			Main.TAR.y = coords.get(current).y;
+			Main.TAR.width = coords.get(current).width;
+			Main.TAR.height = coords.get(current).height;
+			// Draw
+			data.draw(assets.get(current), Main.TAM, null, null, Main.TAR);
 		}
 	}
 	

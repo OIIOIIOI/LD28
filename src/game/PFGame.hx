@@ -11,9 +11,10 @@ import game.Entity.Dir;
  */
 
 typedef Params = {
-	var move:Bool;
+	var basics:Bool;
 	var enemies:Bool;
 	var jump:Bool;
+	var particles:Bool;
 }
 
 class PFGame extends Game {
@@ -47,10 +48,11 @@ class PFGame extends Game {
 	}
 	
 	function parseData (data:BitmapData) {
-		params = { move:false, jump:false, enemies:false };
-		params.move =		(data.getPixel32(0, 0) == cast(0xFFFFFFFF));
+		params = { basics:false, jump:false, enemies:false, particles:false };
+		params.basics =		(data.getPixel32(0, 0) == cast(0xFFFFFFFF));
 		params.enemies =	(data.getPixel32(1, 0) == cast(0xFFFFFFFF));
 		params.jump =		(data.getPixel32(2, 0) == cast(0xFFFFFFFF));
+		params.particles =	(data.getPixel32(3, 0) == cast(0xFFFFFFFF));
 	}
 	
 	#if extLoad
@@ -101,8 +103,8 @@ class PFGame extends Game {
 		}
 		// Inputs
 		if (hero.alive) {
-			if (params.move && keys.get(Keyboard.RIGHT))	hero.move(Dir.RIGHT);
-			if (params.move && keys.get(Keyboard.LEFT))	hero.move(Dir.LEFT);
+			if (params.basics && keys.get(Keyboard.RIGHT))	hero.move(Dir.RIGHT);
+			if (params.basics && keys.get(Keyboard.LEFT))	hero.move(Dir.LEFT);
 			if (params.jump && keys.get(Keyboard.SPACE))	hero.jump();
 		}
 		// Updates
