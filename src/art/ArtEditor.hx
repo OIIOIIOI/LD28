@@ -12,8 +12,10 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import flash.text.TextFormat;
 import game.Level;
+import screens.Screen;
 import ui.Button;
 import ui.UIObject;
+import ui.Window;
 
 /**
  * ...
@@ -22,8 +24,8 @@ import ui.UIObject;
 
 class ArtEditor extends Sprite {
 	
-	public static var WIDTH:Int = 640;
-	public static var HEIGHT:Int = 480;
+	public static var WIDTH:Int = 480;
+	public static var HEIGHT:Int = 360;
 	
 	public static var instance:ArtEditor;
 	
@@ -77,25 +79,27 @@ class ArtEditor extends Sprite {
 		
 		// TODO Remove this
 		var b = new Bitmap(data);
-		b.x = 80;
-		b.y = 8;
+		b.x = 0;
+		b.y = 120;
 		addChild(b);
 		
 		canvas = new Sprite();
-		addChild(canvas);
+		windowContent.addChild(canvas);
 		
 		canvas.addEventListener(MouseEvent.MOUSE_DOWN, downHandler, false, 0, true);
 	}
 	
 	// TODO Brush size, brush color (palettes)
-	// TODO Asset selection
 	
 	// Select the asset to edit
 	public function edit (art:Art) {
+		if (current != null && windowContent.contains(assets.get(current)))	windowContent.removeChild(assets.get(current));
 		current = art;
 		setCanvasSize(current);
 		applyZoom();
-		addChild(assets.get(current));
+		windowContent.addChild(assets.get(current));
+		//
+		window.titleLabel.setText(current + ".png - MS Pain");
 	}
 	
 	// Reset the canvas to the correct size
@@ -122,21 +126,25 @@ class ArtEditor extends Sprite {
 		assets.get(current).x = canvas.x;
 		assets.get(current).y = canvas.y;
 		// Update UI
-		if (zoomLevel == 6)	zoomInButton.alpha = 0.5;
+		if (zoomLevel == 5)	zoomInButton.alpha = 0.5;
 		else				zoomInButton.alpha = 1;
 		if (zoomLevel == 1)	zoomOutButton.alpha = 0.5;
 		else				zoomOutButton.alpha = 1;
 	}
 	
 	//{ ---- UI ----
-	var window:UIObject;
+	var window:Window;
+	var windowContent:Sprite;
 	var zoomInButton:Button;
 	var zoomOutButton:Button;
 	var clearButton:Button;
 	var saveButton:Button;
 	
 	function setupUI () {
-		window = new UIObject(UIObject.getEmptyFrames(640, 480), 0xFFCCCCCC, 0xFF666666);
+		windowContent = new Sprite();
+		windowContent.graphics.beginFill(0x808080);
+		windowContent.graphics.drawRect(0, 0, WIDTH, HEIGHT);
+		windowContent.graphics.endFill();
 		
 		zoomOutButton = new Button(UIObject.getEmptyFrames(32, 32));
 		zoomOutButton.setText("-", 0, 7);
@@ -157,21 +165,30 @@ class ArtEditor extends Sprite {
 		saveButton.x = clearButton.x;
 		saveButton.y = clearButton.y + clearButton.height + 2;
 		
-		addChild(window);
-		addChild(zoomInButton);
-		addChild(zoomOutButton);
-		addChild(clearButton);
-		addChild(saveButton);
+		windowContent.addChild(zoomInButton);
+		windowContent.addChild(zoomOutButton);
+		windowContent.addChild(clearButton);
+		windowContent.addChild(saveButton);
 		
 		zoomInButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
 		zoomOutButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
 		clearButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
 		saveButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+		
+		window = new Window(close, "MS Pain");
+		window.setContent(windowContent);
+		window.x = Std.int((Screen.WIDTH - window.width) / 2);
+		window.y = Std.int((Screen.HEIGHT - window.height) / 2);
+		addChild(window);
 	}
 	//}
 	
+	function close () {
+		trace("close");
+	}
+	
 	function clickHandler (e:MouseEvent) {
-		if (e.currentTarget == zoomInButton && zoomLevel < 6) {
+		if (e.currentTarget == zoomInButton && zoomLevel < 5) {
 			// Zoom in
 			zoomLevel++;
 			applyZoom();

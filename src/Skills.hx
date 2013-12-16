@@ -4,6 +4,7 @@ import flash.display.Sprite;
 import flash.errors.Error;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
+import flash.text.TextFormat;
 import ui.Skill;
 import ui.Switch;
 import ui.UIObject;
@@ -23,7 +24,7 @@ class Skills extends Sprite {
 	//public var orgaLevel:Int = 1;
 	
 	var total:Int;
-	var left:Int;
+	public var left:Int;
 	
 	public function new () {
 		super();
@@ -38,24 +39,26 @@ class Skills extends Sprite {
 	}
 	
 	//{ ---- UI ----
-	var pointsLabel:UIObject;
+	//var pointsLabel:UIObject;
 	var codeSkill:Skill;
 	var artSkill:Skill;
 	var musicSkill:Skill;
 	//var orgaSkill:Skill;
 	
 	function setupUI () {
-		pointsLabel = new UIObject(UIObject.getEmptyFrames(160, 24));
+		//pointsLabel = new UIObject(UIObject.getEmptyFrames(160, 24), 0, 0);
 		
 		codeSkill = new Skill("Code mastery: ");
-		codeSkill.x = pointsLabel.x;
-		codeSkill.y = pointsLabel.y + pointsLabel.height + 4;
+		codeSkill.x = 0;
+		codeSkill.y = 0;
+		//codeSkill.x = pointsLabel.x;
+		//codeSkill.y = pointsLabel.y + pointsLabel.height + 4;
 		
 		artSkill = new Skill("Artistic vibe: ");
 		artSkill.x = codeSkill.x;
 		artSkill.y = codeSkill.y + codeSkill.height + 4;
 		
-		musicSkill = new Skill("Music writing : ");
+		musicSkill = new Skill("Music writing: ");
 		musicSkill.x = codeSkill.x;
 		musicSkill.y = artSkill.y + artSkill.height + 4;
 		
@@ -63,7 +66,7 @@ class Skills extends Sprite {
 		orgaSkill.x = codeSkill.x;
 		orgaSkill.y = musicSkill.y + musicSkill.height + 4;*/
 		
-		addChild(pointsLabel);
+		//addChild(pointsLabel);
 		addChild(codeSkill);
 		addChild(artSkill);
 		addChild(musicSkill);
@@ -112,7 +115,7 @@ class Skills extends Sprite {
 		// Update points
 		//left = total - codeSkill.value - artSkill.value - musicSkill.value - orgaSkill.value;
 		left = total - codeSkill.value - artSkill.value - musicSkill.value;
-		pointsLabel.setText("Points left: " + left, 0, 4);
+		//pointsLabel.setText("Points left: " + left, 0, 4);
 		// More buttons
 		if (left == 0) {
 			codeSkill.moreButton.alpha = 0.5;

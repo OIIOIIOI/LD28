@@ -26,7 +26,7 @@ class MusicTest extends Sprite {
 		//scale = 20;
 		
 		seq = new Array();
-		for (i in 62...63) {
+		for (i in 1...30) {
 			seq.push(new SoundObj("snd/" + i + ".wav", 0));
 			trace(i + ": " + seq[seq.length - 1].url + "\t\t" + seq[seq.length - 1].sound.length + ",");
 		}

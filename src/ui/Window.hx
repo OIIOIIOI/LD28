@@ -16,17 +16,24 @@ import openfl.Assets;
 class Window extends Sprite {
 	
 	var background:Bitmap;
+	public var titleLabel:UIObject;
 	var closeButton:Button;
 	var closeCallback:Void->Void;
 	//var top:Sprite;
 	
-	public function new (closeCB:Void->Void = null) {
+	public function new (closeCB:Void->Void = null, title:String = "") {
 		super();
 		
 		closeCallback = closeCB;
 		
 		background = new Bitmap(Assets.getBitmapData("img/window.png"));
 		addChild(background);
+		
+		titleLabel = new UIObject(UIObject.getEmptyFrames(200, 20), 0, 0);
+		titleLabel.setText(title, 0, 0, Main.FORMAT_WINDOW);
+		titleLabel.x = 255;
+		titleLabel.y = 8;
+		addChild(titleLabel);
 		
 		if (closeCallback != null) {
 			closeButton = new Button([new Rectangle(0, 16, 22, 22)]);
@@ -51,9 +58,18 @@ class Window extends Sprite {
 	}
 	
 	public function setContent (c:DisplayObject) {
-		c.x = 6;
-		c.y = 19;
+		c.x = 9;
+		c.y = 25;
 		addChild(c);
+		//
+		var m = new Sprite();
+		m.graphics.beginFill(0x00FF00);
+		m.graphics.drawRect(0, 0, 480, 360);
+		m.graphics.endFill();
+		addChild(m);
+		m.x = c.x;
+		m.y = c.y;
+		c.mask = m;
 		// Put close on top
 		if (closeButton != null)	addChild(closeButton);
 	}

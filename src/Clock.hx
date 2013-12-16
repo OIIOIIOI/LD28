@@ -1,8 +1,10 @@
 package ;
 
 import flash.display.Bitmap;
+import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.errors.Error;
+import openfl.Assets;
 
 /**
  * ...
@@ -20,6 +22,7 @@ class Clock {
 	var paused(default, null):Bool;
 	
 	public var sprite:ClockSprite;
+	public var skySprite:Sprite;
 	
 	public function new () {
 		if (instance != null)	throw new Error("Already instanciated");
@@ -29,6 +32,13 @@ class Clock {
 		paused = true;
 		
 		sprite = new ClockSprite();
+		skySprite = new Sprite();
+		var b:Bitmap = new Bitmap(Assets.getBitmapData("img/dailydisc.png"), PixelSnapping.AUTO, true);
+		b.x = -b.width / 2;
+		b.y = -b.height / 2;
+		skySprite.x = 299;
+		skySprite.y = 325;
+		skySprite.addChild(b);
 	}
 	
 	public function setMode (mode:LDMode) {
@@ -50,6 +60,14 @@ class Clock {
 			timeLeft -= tick;
 			if (timeLeft <= 0)	timeLeft = 0;
 			sprite.display(totalTime - timeLeft);
+			// TODO Correct time
+			var f = (totalTime - timeLeft) / 360;
+			var h = Std.int(f);
+			var m = Std.int((f - h) * 60);
+			while (h > 24)	h -= 24;
+			var hRatio = h / 24;
+			var mRatio = m / 60;
+			skySprite.rotation = 360 * hRatio + (360 / 24 * mRatio);
 		}
 	}
 	
@@ -64,31 +82,25 @@ class Clock {
 
 class ClockSprite extends Sprite {
 	
-	var body:Sprite;
 	var hoursHand:Sprite;
 	var minutesHand:Sprite;
 	
 	public function new () {
 		super();
 		
-		body = new Sprite();
-		body.graphics.lineStyle(2);
-		body.graphics.beginFill(0xFFFFFF);
-		body.graphics.drawCircle(0, 0, 50);
-		body.graphics.endFill();
-		addChild(body);
-		
-		hoursHand = new Sprite();
-		hoursHand.graphics.beginFill(0x000000);
-		hoursHand.graphics.drawRect(-2, 2, 4, -25);
-		hoursHand.graphics.endFill();
-		addChild(hoursHand);
-		
+		var b:Bitmap = new Bitmap(Assets.getBitmapData("img/minutehand.png"), PixelSnapping.AUTO, true);
+		b.x = -b.width / 2;
+		b.y = -b.height + b.width / 2;
 		minutesHand = new Sprite();
-		minutesHand.graphics.beginFill(0x000000);
-		minutesHand.graphics.drawRect(-1, 1, 2, -40);
-		minutesHand.graphics.endFill();
+		minutesHand.addChild(b);
 		addChild(minutesHand);
+		
+		b = new Bitmap(Assets.getBitmapData("img/hourhand.png"), PixelSnapping.AUTO, true);
+		b.x = -b.width / 2;
+		b.y = -b.height + b.width / 2;
+		hoursHand = new Sprite();
+		hoursHand.addChild(b);
+		addChild(hoursHand);
 	}
 	
 	public function display (t:Int) {
@@ -100,7 +112,7 @@ class ClockSprite extends Sprite {
 		
 		var hRatio = h / 24;
 		var mRatio = m / 60;
-		// TODO Smooth rotation
+		// TODO Correct time a smooth rotation
 		hoursHand.rotation = 360 * hRatio + (360 / 24 * mRatio);
 		minutesHand.rotation = 360 * mRatio;
 	}

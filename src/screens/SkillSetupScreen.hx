@@ -39,7 +39,7 @@ class SkillSetupScreen extends Screen {
 				Level.SCALE = 2;
 			}
 			// Change mode
-			Main.instance.startMode(Mode.Waiting);
+			//Main.instance.startMode(Mode.Waiting);
 		}
 	}
 	

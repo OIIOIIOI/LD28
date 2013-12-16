@@ -25,10 +25,13 @@ class UIObject extends Sprite {
 	var data:BitmapData;
 	var dataB:Bitmap;
 	
+	public var customData:Dynamic;
+	
 	public var tf:TextField;
 	static public var FONT:Font;
 	static public var FORMAT:TextFormat;
 	static public var FORMAT_LEFT:TextFormat;
+	static public var FORMAT_RIGHT:TextFormat;
 	
 	public function new (frames:Array<Rectangle>, bg:UInt = 0xFF999999, border:UInt = 0xFF666666) {
 		super();
@@ -37,7 +40,11 @@ class UIObject extends Sprite {
 		if (FORMAT == null) {
 			FORMAT = new TextFormat(FONT.fontName, 14, 0xFF333333);
 			FORMAT.align = TextFormatAlign.CENTER;
-			FORMAT_LEFT = new TextFormat(FONT.fontName, 13, 0xFF333333);
+			
+			FORMAT_LEFT = new TextFormat(FONT.fontName, 14, 0xFF333333);
+			
+			FORMAT_RIGHT = new TextFormat(FONT.fontName, 14, 0xFF333333);
+			FORMAT_RIGHT.align = TextFormatAlign.RIGHT;
 		}
 		
 		this.frames = frames;

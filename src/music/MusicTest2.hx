@@ -52,7 +52,8 @@ class MusicTest2 extends Sprite {
 		trackA = Assets.getSound("snd/lead.wav");
 		trackB = Assets.getSound("snd/playback.wav");
 		
-		var a = Assets.getText("snd/track2.txt").split(";");
+		//var a = Assets.getText("snd/track2.txt").split(";");
+		var a = Assets.getText("snd/easy.txt").split(";");
 		
 		seq = new Array();
 		
@@ -90,7 +91,7 @@ class MusicTest2 extends Sprite {
 	}
 	
 	function play () {
-		trackASC = trackA.play(0, 0, new SoundTransform(0));
+		trackASC = trackA.play(0, 0, new SoundTransform(0.5));
 		trackB.play(0, 0, new SoundTransform(0.5));
 		//
 		addEventListener(Event.ENTER_FRAME, update);

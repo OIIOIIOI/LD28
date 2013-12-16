@@ -23,29 +23,29 @@ class Skill extends Sprite {
 	public function new (text:String) {
 		super();
 		
-		label = new UIObject(UIObject.getEmptyFrames(160, 24));
-		label.setText(text, 0, 4);
+		label = new UIObject(UIObject.getEmptyFrames(160, 24), 0, 0);
+		label.setText(text, 0, 4, UIObject.FORMAT_RIGHT);
 		
-		lessButton = new Button(UIObject.getEmptyFrames(24, 24));
+		lessButton = new Button(UIObject.getEmptyFrames(24, 24), 0xFF76BBED, 0xFF395B73);
 		lessButton.setText("-", 0, 4);
-		lessButton.x = label.x + label.width + 4;
+		lessButton.x = label.x + label.width + 8;
 		lessButton.y = label.y;
 		
 		starA = new UIObject([new Rectangle(0, 0, 16, 16), new Rectangle(16, 0, 16, 16)]);
-		starA.x = lessButton.x + lessButton.width + 4;
+		starA.x = lessButton.x + lessButton.width + 8;
 		starA.y = label.y + 4;
 		
 		starB = new UIObject([new Rectangle(0, 0, 16, 16), new Rectangle(16, 0, 16, 16)]);
-		starB.x = starA.x + starA.width + 4;
+		starB.x = starA.x + starA.width + 8;
 		starB.y = starA.y;
 		
 		starC = new UIObject([new Rectangle(0, 0, 16, 16), new Rectangle(16, 0, 16, 16)]);
-		starC.x = starB.x + starB.width + 4;
+		starC.x = starB.x + starB.width + 8;
 		starC.y = starA.y;
 		
-		moreButton = new Button(UIObject.getEmptyFrames(24, 24));
+		moreButton = new Button(UIObject.getEmptyFrames(24, 24), 0xFF76BBED, 0xFF395B73);
 		moreButton.setText("+", 0, 4);
-		moreButton.x = starC.x + starC.width + 4;
+		moreButton.x = starC.x + starC.width + 8;
 		moreButton.y = label.y;
 		
 		addChild(label);
