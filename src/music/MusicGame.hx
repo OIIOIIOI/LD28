@@ -96,8 +96,8 @@ class MusicGame extends Sprite {
 		addChild(head);
 		
 		// Record
-		recordButton = new Button(UIObject.getEmptyFrames(100, 40), 0xFFCC3333, 0xFF660000);
-		recordButton.setText("Record");
+		recordButton = new Button(UIObject.getEmptyFrames(100, 40), 0xFFCC3333, 0xFFFFFFFF);
+		recordButton.setText("Record", 0, 10, UIObject.FORMAT_WHITE);
 		recordButton.x = -140;
 		recordButton.y = -20;
 		addChild(recordButton);
@@ -184,6 +184,7 @@ class MusicGame extends Sprite {
 	}
 	
 	function endRecording () {
+		Main.instance.saveMusic(seq);
 		stop();
 	}
 	

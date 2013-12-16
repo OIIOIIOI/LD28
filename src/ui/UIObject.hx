@@ -30,6 +30,7 @@ class UIObject extends Sprite {
 	public var tf:TextField;
 	static public var FONT:Font;
 	static public var FORMAT:TextFormat;
+	static public var FORMAT_WHITE:TextFormat;
 	static public var FORMAT_LEFT:TextFormat;
 	static public var FORMAT_RIGHT:TextFormat;
 	
@@ -42,6 +43,9 @@ class UIObject extends Sprite {
 		if (FORMAT == null) {
 			FORMAT = new TextFormat(FONT.fontName, 14, 0xFF333333);
 			FORMAT.align = TextFormatAlign.CENTER;
+			
+			FORMAT_WHITE = new TextFormat(FONT.fontName, 14, 0xFFFFFFFF);
+			FORMAT_WHITE.align = TextFormatAlign.CENTER;
 			
 			FORMAT_LEFT = new TextFormat(FONT.fontName, 14, 0xFF333333);
 			

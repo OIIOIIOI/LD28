@@ -1,5 +1,6 @@
 package ;
 
+import flash.errors.Error;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
@@ -24,8 +25,12 @@ class SoundManager {
 		if (cache.exists(url)) {
 			return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
 		} else {
-			cache.set(url, Assets.getSound(url));
-			return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
+			var s = Assets.getSound(url);
+			if (s != null) {
+				cache.set(url, s);
+				return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
+			}
+			return null;
 		}
 	}
 	

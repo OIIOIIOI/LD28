@@ -112,7 +112,7 @@ class ClockSprite extends Sprite {
 		
 		var hRatio = h / 24;
 		var mRatio = m / 60;
-		// TODO Correct time a smooth rotation
+		// TODO Correct time & smooth rotation
 		hoursHand.rotation = 360 * hRatio + (360 / 24 * mRatio);
 		minutesHand.rotation = 360 * mRatio;
 	}

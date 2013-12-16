@@ -2,6 +2,7 @@ package ;
 
 import art.ArtEditor;
 import Clock;
+import code.CodeGame;
 import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.display.Sprite;
@@ -21,8 +22,10 @@ import flash.text.TextFormatAlign;
 import game.Game;
 import game.Level;
 import game.PFGame;
+import music.MusicGame.SndObj;
 import openfl.Assets;
 import screens.ArtScreen;
+import screens.CodeScreen;
 import screens.GameScreen;
 import screens.MusicScreen;
 import screens.Screen;
@@ -53,6 +56,8 @@ class Main extends Sprite {
 	public static var FORMAT_BOLD:TextFormat;
 	
 	public static var instance:Main;
+	
+	public var data:BitmapData;
 	
 	public var scene:Scene;
 	var mode:Mode;
@@ -110,6 +115,8 @@ class Main extends Sprite {
 		LEVELS = Assets.getBitmapData("img/levels.png");
 		#end
 		
+		data = new BitmapData(96, 72, true, 0x00000000);
+		
 		SoundManager.init();
 		
 		setupTextStuff();
@@ -117,20 +124,15 @@ class Main extends Sprite {
 		scene = new Scene();
 		addChild(scene);
 		
-		var startData:BitmapData = new BitmapData(128, 128, true, 0x00FF00FF);
-		startData.setPixel32(0, 0, 0xFFFFFFFF);
-		startData.setPixel32(1, 0, 0xFFFFFFFF);
-		startData.setPixel32(2, 0, 0xFFFFFFFF);
-		startData.setPixel32(3, 0, 0xFFFFFFFF);
-		
-		new ArtEditor(startData);
-		
+		new ArtEditor();
 		new Skills();
 		//Skills.instance.codeLevel = 3;
 		//Skills.instance.artLevel = 3;
 		//Skills.instance.musicLevel = 3;
 		
-		startMode(Mode.Setup);
+		//SoundManager.play("snd/ambient.mp3");
+		
+		startMode(Mode.Title);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -171,6 +173,8 @@ class Main extends Sprite {
 				screen = new GameScreen();
 			case Mode.MusicEdit:
 				screen = new MusicScreen();
+			case Mode.CodeEdit:
+				screen = new CodeScreen();
 			default:
 		}
 		mode = m;
@@ -179,6 +183,15 @@ class Main extends Sprite {
 	
 	public function executeAction (a:String) {
 		switch (a) {
+			case "codeBasics":
+				CodeGame.current = Module.Basics;
+				startMode(Mode.CodeEdit);
+			case "codeEnemies":
+				CodeGame.current = Module.Enemies;
+				startMode(Mode.CodeEdit);
+			case "codeJump":
+				CodeGame.current = Module.Jump;
+				startMode(Mode.CodeEdit);
 			case "artHero":
 				ArtEditor.instance.current = Art.Hero;
 				startMode(Mode.ArtEdit);
@@ -191,10 +204,26 @@ class Main extends Sprite {
 			case "artTreasure":
 				ArtEditor.instance.current = Art.Goal;
 				startMode(Mode.ArtEdit);
-			case "testGame":
-				startMode(Mode.PlayTest);
 			case "recordMusic":
 				startMode(Mode.MusicEdit);
+			case "testGame":
+				startMode(Mode.PlayTest);
+		}
+	}
+	
+	public function completeModule (m:Module) {
+		var p:IntPoint = switch (m) {
+			case Module.Basics:		new IntPoint(0, 64);
+			case Module.Enemies:	new IntPoint(1, 64);
+			case Module.Jump:		new IntPoint(2, 64);
+		}
+		data.setPixel32(p.x, p.y, 0xFFFFFFFF);
+	}
+	
+	public function saveMusic (seq:Array<SndObj>) {
+		for (i in 0...seq.length) {
+			if (seq[i].result == 1)	data.setPixel32(i, 65, 0xFFFFFFFF);
+			else					data.setPixel32(i, 65, 0x00000000);
 		}
 	}
 	

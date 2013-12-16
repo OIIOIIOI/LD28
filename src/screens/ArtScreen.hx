@@ -17,9 +17,6 @@ import ui.Window;
  * @author 01101101
  */
 
-// TODO Brush size
-// TODO brush color (palettes)
-
 class ArtScreen extends Screen {
 	
 	var AE:ArtEditor;
@@ -99,7 +96,7 @@ class ArtScreen extends Screen {
 		winContent.addChild(clearButton);
 		
 		brushRadius = 3;
-		brushColor = 0x666699;
+		brushColor = Palette.getColors()[0];
 		zoomLevel = zoomMin;
 		
 		// Display
@@ -151,7 +148,6 @@ class ArtScreen extends Screen {
 			brushRadius = cast(e.currentTarget).customData;
 			refreshUI();
 		} else if (e.currentTarget == clearButton) {
-			AE.assets.get(AE.current).graphics.clear();
 			AE.resetData(AE.current);
 		}
 	}

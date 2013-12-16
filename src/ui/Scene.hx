@@ -1,6 +1,7 @@
 package ui;
 
 import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
@@ -88,8 +89,10 @@ class Scene extends Sprite {
 		foregroundLayer.addChild(Clock.instance.sprite);
 		skyLayer.addChild(Clock.instance.skySprite);
 		// Post-its
-		mainPI = new PostIt("TODO", ["-MAKE a game ", "-TEST it ", "-SUBMIT it "], 0, mainPIClickHandler);
-		mainPI.buttons[0].setActive(false, true);
+		mainPI = new PostIt("TODO", ["-FIND an idea ", "-TEST the game ", "-SUBMIT it "], 0, mainPIClickHandler);
+		mainPI.buttons[0].setDone(true);
+		mainPI.buttons[1].setActive(false, true);
+		mainPI.buttons[2].setActive(false, true);
 		mainPI.x = 10;
 		mainPI.y = 80;
 		mainPI.rotation = 4;
@@ -98,27 +101,30 @@ class Scene extends Sprite {
 		codePI.buttons[2].setActive(false, true);
 		codePI.x = mainPI.x + 10;
 		codePI.y = mainPI.y + 150;
-		artPI = new PostIt("ART", ["-hero ", "-enemy ", "-block ", "-goal "], 0, artPIClickHandler);
+		artPI = new PostIt("ART", ["-block ", "-hero ", "-goal ", "-enemy "], 0, artPIClickHandler);
+		artPI.buttons[3].setActive(false, true);
 		artPI.x = mainPI.x - 5;
 		artPI.y = codePI.y + 150;
 		artPI.rotation = -4;
 		musicPI = new PostIt("MUSIC", ["-record some "], 1, musicPIClickHandler);
 		musicPI.x = 80;
 		musicPI.y = 550;
+		
+		var tmp = new Bitmap(Main.instance.data);
+		tmp.scaleX = tmp.scaleY = 2;
+		addChild(tmp);
 	}
 	
 	public function start () {
 		showPI(mainPI);
 		Timer.delay(showPI.bind(codePI), 500);
-		Timer.delay(showPI.bind(artPI), 900);
-		Timer.delay(showPI.bind(musicPI), 1200);
 		//
 		Clock.instance.pause(false);
 	}
 	
 	function showPI (pi:PostIt) {
 		foregroundLayer.addChild(pi);
-		SoundManager.play("snd/sfx/postit.mp3");
+		SoundManager.play("snd/sfx/postit0" + Std.random(3) + ".mp3");
 	}
 	
 	function mainPIClickHandler (e:MouseEvent) {

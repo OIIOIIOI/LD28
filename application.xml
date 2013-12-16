@@ -21,6 +21,7 @@
 	<assets path="assets/img" rename="img" />
 	<assets path="assets/fonts" include="*.ttf" rename="fonts" />
 	<assets path="assets/snd" rename="snd" />
+	<assets path="assets/hex.txt" />
 	
 	<app swf-version="11.3"/>
 	<!--<haxeflag name="-D extLoad" />-->

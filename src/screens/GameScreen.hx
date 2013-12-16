@@ -31,7 +31,7 @@ class GameScreen extends Screen {
 		#if extLoad
 		playGame = new PFGame(ArtEditor.instance.data, debug);
 		#else
-		playGame = new PFGame(ArtEditor.instance.data);
+		playGame = new PFGame(Main.instance.data);
 		#end
 		playGame.scaleX = playGame.scaleY = Level.SCALE * 0.75;
 		winContent.addChild(playGame);
