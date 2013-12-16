@@ -4,6 +4,7 @@ import flash.display.Sprite;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
+import flash.ui.Keyboard;
 
 
 /**
@@ -25,10 +26,11 @@ class KeyIcon extends Sprite {
 		tf.defaultTextFormat = f;
 		tf.selectable = tf.multiline = false;
 		tf.width = MusicTrack.WIDTH;
-		tf.text = switch (inst) {
-			case 0:		"J";
-			case 1:		"K";
-			default:	"L";
+		tf.text = switch (MusicGame.getCorrectKey(inst)) {
+			case Keyboard.J:	"J";
+			case Keyboard.K:	"K";
+			case Keyboard.L:	"L";
+			default:			"?";
 		}
 		addChild(tf);
 	}

@@ -22,13 +22,14 @@ import ui.UIObject;
 
 class MusicGame extends Sprite {
 	
-	public static var TOLERANCE_BEFORE:Int = 85;
-	public static var TOLERANCE_AFTER:Int = 100;
+	public static var TOLERANCE_BEFORE:Int = 80;
+	public static var TOLERANCE_AFTER:Int = 110;
 	public static var SCALE:Int = 10;
 	
 	var trackA:Sound;
+	var trackASC:SoundChannel;
 	var trackB:Sound;
-	var trackSC:SoundChannel;
+	var trackBSC:SoundChannel;
 	
 	var seq:Array<SndObj>;
 	var part:Int;
@@ -39,7 +40,7 @@ class MusicGame extends Sprite {
 	var recording:Bool;
 	var fading:Bool;
 	
-	var keys:Map<Int, Key>;
+	var keys:Map<Int, Bool>;
 	
 	public function new () {
 		super();
@@ -119,9 +120,13 @@ class MusicGame extends Sprite {
 	}
 	
 	function play () {
-		trackA.play(0, 0, new SoundTransform(0.1));
-		trackSC = trackB.play(0, 0, new SoundTransform(0.1));
-		trackSC.addEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
+		for (snd in seq) {
+			if (snd.index > 0)	snd.block.reset(true);
+		}
+		//
+		trackASC = trackA.play(0, 0, new SoundTransform(0.5));
+		trackBSC = trackB.play(0, 0, new SoundTransform(0.5));
+		trackBSC.addEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
 		//
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
@@ -130,29 +135,24 @@ class MusicGame extends Sprite {
 	public function update () {
 		if (recording) {
 			// Update current part
-			while (trackSC.position > seq[part].prevTotal && part < seq.length - 1) {
-				if (part > 0)	Timer.delay(failAction, TOLERANCE_AFTER + 5);
+			while (trackBSC.position > seq[part].prevTotal + seq[part].length + TOLERANCE_AFTER) {
 				part++;
+				// If part is not done yet, it is failed
+				if (seq[part].result == 0) {
+					trackASC.soundTransform = new SoundTransform(0);
+					seq[part].block.done(false);
+				}
 			}
 			// Scroll track
-			var ratio = (trackSC.position - seq[part].prevTotal) / seq[part].length;
+			var ratio = (trackBSC.position - seq[part].prevTotal) / seq[part].length;
 			var newY = ratio * (seq[part].length / MusicGame.SCALE) + seq[part].prevTotal / MusicGame.SCALE;
 			track.y = newY;
 		} else if (fading) {
-			track.alpha *= 0.9;
-			if (track.alpha < 0.05) {
+			track.alpha *= 0.95;
+			if (track.alpha < 0.02) {
 				endRecording();
 			}
 		}
-		// Update keys
-		for (k in keys) {
-			k.justChanged = false;
-		}
-	}
-	
-	function failAction () {
-		if (seq[part - 1].result == 0)
-			seq[part - 1].block.done(false);
 	}
 	
 	function soundCompleteHandler (e:Event) {
@@ -162,6 +162,9 @@ class MusicGame extends Sprite {
 	
 	function endRecording () {
 		fading = false;
+		for (snd in seq) {
+			snd.block.reset();
+		}
 		track.alpha = 1;
 		track.y = 0;
 		recordButton.setActive(true, true);
@@ -172,11 +175,12 @@ class MusicGame extends Sprite {
 		var yy:Float = 0;
 		for (snd in seq) {
 			var h = snd.length / SCALE;
-			var block = new MusicBlock(snd);
+			var block = new MusicBlock(snd, (snd.index == seq.length - 1));
 			block.x = snd.inst * (MusicTrack.WIDTH + MusicTrack.GUTTER);
 			block.y = -yy;
-			track.addChild(block);
-			//
+			// Hide and auto-win first block
+			if (snd.index > 0)	track.addChild(block);
+			else				snd.result = 1;
 			snd.block = block;
 			snd.pos = yy;
 			// Inc
@@ -186,39 +190,64 @@ class MusicGame extends Sprite {
 	
 	function registerKeys () {
 		if (keys != null)	return;
-		keys = new Map<Int, Key>();
-		keys.set(Keyboard.J, { down:false, justChanged:false, lastDown:0, lastUp:0 });
-		keys.set(Keyboard.K, { down:false, justChanged:false, lastDown:0, lastUp:0 });
-		keys.set(Keyboard.L, { down:false, justChanged:false, lastDown:0, lastUp:0 });
+		keys = new Map<Int, Bool>();
+		keys.set(Keyboard.J, false);
+		keys.set(Keyboard.K, false);
+		keys.set(Keyboard.L, false);
 	}
 	
 	function keyDownHandler (e:KeyboardEvent) {
 		if (keys.exists(e.keyCode)) {
-			if (!keys.get(e.keyCode).down) {
-				keys.get(e.keyCode).down = true;
-				keys.get(e.keyCode).justChanged = true;
-				//keys.get(e.keyCode).lastDown = Timer.stamp() * 1000;
-				keys.get(e.keyCode).lastDown = trackSC.position;
+			if (!keys.get(e.keyCode)) {
+				keys.set(e.keyCode, true);
+				if (part > 0)	checkAction(e.keyCode);
 			}
 		}
 	}
 	
 	function keyUpHandler (e:KeyboardEvent) {
-		if (keys.exists(e.keyCode)) {
-			keys.get(e.keyCode).down = false;
-			keys.get(e.keyCode).justChanged = false;
-			//keys.get(e.keyCode).lastUp = Timer.stamp() * 1000;
-			keys.get(e.keyCode).lastUp = trackSC.position;
+		if (keys.exists(e.keyCode))	keys.set(e.keyCode, false);
+	}
+	
+	function checkAction (key:UInt) {
+		// If no more parts
+		if (part == seq.length - 1) {
+			trackASC.soundTransform = new SoundTransform(0);
+			seq[part].block.done(false);
+			return;
+		}
+		// If correct key AND in the BEFORE margin for next block, good
+		var inst:Int = seq[part + 1].inst;
+		if (key == getCorrectKey(inst) && trackBSC.position > seq[part].prevTotal + seq[part].length - TOLERANCE_BEFORE) {
+			trackASC.soundTransform = new SoundTransform(0.5);
+			seq[part + 1].block.done();
+		}
+		// Else it is a fail of the current part
+		else {
+			trackASC.soundTransform = new SoundTransform(0);
+			seq[part].block.done(false);
 		}
 	}
 	
-}
-
-typedef Key = {
-	var down:Bool;
-	var justChanged:Bool;
-	var lastDown:Float;
-	var lastUp:Float;
+	public static function getCorrectKey (inst:Int) {
+		// Get correct key
+		var correctKey:UInt;
+		if (Skills.instance.musicLevel > 0) {
+			correctKey = switch (inst) {
+				case 0:		Keyboard.J;
+				case 1:		Keyboard.K;
+				default:	Keyboard.L;
+			}
+		} else {
+			correctKey = switch (inst) {
+				case 0:		Keyboard.L;
+				case 1:		Keyboard.J;
+				default:	Keyboard.K;
+			}
+		}
+		return correctKey;
+	}
+	
 }
 
 class SndObj {

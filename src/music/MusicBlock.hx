@@ -10,29 +10,22 @@ import music.MusicGame.SndObj;
 
 class MusicBlock extends Sprite {
 	
-	public static function getColor (inst:Int) :UInt {
-		return switch (inst) {
-			case 0:		0x8BA4A9;
-			case 1:		0x706B7F;
-			case 2:		0x5A3556;
-			case 3:		0xCC333F;//fail
-			default:	0xCBE86B;//win
-		}
-	}
-	
 	public var snd(default, null):SndObj;
-	var h:Float;
 	
-	public function new (snd:SndObj) {
+	var h:Float;
+	var isLast:Bool;
+	
+	public function new (snd:SndObj, isLast:Bool) {
 		super();
 		
 		this.snd = snd;
+		this.isLast = isLast;
 		
-		h = snd.length / MusicGame.SCALE;
+		if (!isLast)	h = snd.length / MusicGame.SCALE;
+		else			h = 1000;
 		
 		draw(MusicBlock.getColor(snd.inst));
 	}
-	
 	
 	function draw (c:UInt) {
 		graphics.clear();
@@ -45,9 +38,24 @@ class MusicBlock extends Sprite {
 	}
 	
 	public function done (win:Bool = true) {
-		this.snd.result = (win) ? 1 : 0;
+		snd.result = (win) ? 1 : 0;
 		if (win)	draw(MusicBlock.getColor(4));
 		else		draw(MusicBlock.getColor(3));
+	}
+	
+	public function reset (complete:Bool = false) {
+		draw(MusicBlock.getColor(snd.inst));
+		if (complete)	snd.result = 0;
+	}
+	
+	public static function getColor (inst:Int) :UInt {
+		return switch (inst) {
+			case 0:		0x8BA4A9;
+			case 1:		0x706B7F;
+			case 2:		0x5A3556;
+			case 3:		0xCC333F;//fail
+			default:	0xCBE86B;//win
+		}
 	}
 	
 }
