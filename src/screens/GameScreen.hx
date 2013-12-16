@@ -42,6 +42,11 @@ class GameScreen extends Screen {
 		playGame.update();
 	}
 	
+	override public function clean () {
+		super.clean();
+		playGame.clean();
+	}
+	
 }
 
 

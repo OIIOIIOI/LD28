@@ -41,6 +41,7 @@ class MusicBlock extends Sprite {
 		snd.result = (win) ? 1 : 0;
 		if (win)	draw(MusicBlock.getColor(4));
 		else		draw(MusicBlock.getColor(3));
+		Main.instance.saveNote(snd);
 	}
 	
 	public function reset (complete:Bool = false) {

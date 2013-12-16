@@ -17,11 +17,11 @@ class SoundManager {
 	
 	static var cache:Map<String, Sound>;
 	
-	static public function init () {
+	public static function init () {
 		cache = new Map<String, Sound>();
 	}
 	
-	static public function play (url:String) :SoundChannel {
+	public static function play (url:String) :SoundChannel {
 		if (cache.exists(url)) {
 			return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
 		} else {
@@ -35,3 +35,13 @@ class SoundManager {
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+

@@ -2,8 +2,13 @@ package game;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.events.Event;
+import flash.media.SoundChannel;
+import flash.media.SoundTransform;
 import flash.ui.Keyboard;
 import game.Entity.Dir;
+import music.MusicGame.SndObj;
+import openfl.Assets;
 
 /**
  * ...
@@ -48,9 +53,9 @@ class PFGame extends Game {
 	
 	function parseData (data:BitmapData) {
 		params = { basics:false, jump:false, enemies:false };
-		params.basics =		(data.getPixel32(0, 64) == cast(0xFFFFFFFF));
-		params.enemies =	(data.getPixel32(1, 64) == cast(0xFFFFFFFF));
-		params.jump =		(data.getPixel32(2, 64) == cast(0xFFFFFFFF));
+		params.basics =		(data.getPixel32(0, 64) == cast(0xFF000000));
+		params.enemies =	(data.getPixel32(1, 64) == cast(0xFF000000));
+		params.jump =		(data.getPixel32(2, 64) == cast(0xFF000000));
 	}
 	
 	#if extLoad
@@ -79,6 +84,12 @@ class PFGame extends Game {
 			//e.clean();
 			//e = null;
 		}
+		if (trackBSC != null) {
+			playing = false;
+			trackBSC.removeEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
+			trackASC.stop();
+			trackBSC.stop();
+		}
 	}
 	
 	function restartLevel () {
@@ -93,6 +104,8 @@ class PFGame extends Game {
 				enemies.push(getNewEnemy(e));
 			}
 		}
+		// Sound
+		playback();
 	}
 	
 	override public function update () {
@@ -136,6 +149,17 @@ class PFGame extends Game {
 			for (e in enemies)	if (e.alive)	e.die();
 			trace("YOU WIN");
 		}
+		// Sound
+		if (playing) {
+			while (trackBSC.position > seq[part].prevTotal + seq[part].length) {
+				part++;
+				if (Main.instance.data.getPixel32(seq[part].index, 65) == cast(0xFF000000)) {
+					trackASC.soundTransform = new SoundTransform(SoundManager.GLOBAL_VOL);
+				} else {
+					trackASC.soundTransform = new SoundTransform(0);
+				}
+			}
+		}
 	}
 	
 	// TODO remove dead entities from the loop
@@ -157,6 +181,45 @@ class PFGame extends Game {
 		keys.set(Keyboard.LEFT, false);
 		keys.set(Keyboard.SPACE, false);
 		keys.set(Keyboard.ENTER, false);
+	}
+	
+	// ---- SOUND PLAYBACK ----
+	
+	var playing:Bool;
+	var part:Int;
+	var seq:Array<SndObj>;
+	var trackASC:SoundChannel;
+	var trackBSC:SoundChannel;
+	
+	public function playback () {
+		var diff = "normal";
+		if (Skills.instance.musicLevel == 3)	diff = "easy";
+		var a = Assets.getText("snd/" + diff + ".txt").split(";");
+		
+		seq = new Array();
+		part = 0;
+		
+		var total = 0.0;
+		for (i in 0...a.length) {
+			var so = new SndObj(i, a[i]);
+			so.prevTotal = total;
+			seq.push(so);
+			total += so.length;
+		}
+		
+		if (trackBSC != null) {
+			trackBSC.removeEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
+			trackASC.stop();
+			trackBSC.stop();
+		}
+		trackASC = SoundManager.play("snd/lead.mp3");
+		trackBSC = SoundManager.play("snd/playback.mp3");
+		trackBSC.addEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
+		playing = true;
+	}
+	
+	function soundCompleteHandler (e:Event) {
+		playing = false;
 	}
 	
 }

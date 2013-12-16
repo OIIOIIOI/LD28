@@ -146,6 +146,7 @@ class MusicGame extends Sprite {
 		
 		for (snd in seq) {
 			snd.block.reset();
+			if (snd.index == 0) snd.block.done();
 		}
 		track.alpha = 1;
 		track.y = 0;
@@ -184,7 +185,7 @@ class MusicGame extends Sprite {
 	}
 	
 	function endRecording () {
-		Main.instance.saveMusic(seq);
+		//Main.instance.saveMusic(seq);
 		stop();
 	}
 	
@@ -198,7 +199,7 @@ class MusicGame extends Sprite {
 			block.y = -yy;
 			// Hide and auto-win first block
 			if (snd.index > 0)	track.addChild(block);
-			else				snd.result = 1;
+			else				block.done();
 			snd.block = block;
 			snd.pos = yy;
 			// Inc

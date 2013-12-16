@@ -14,6 +14,8 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
+import flash.media.SoundChannel;
+import flash.media.SoundTransform;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.text.Font;
@@ -211,11 +213,17 @@ class Main extends Sprite {
 		}
 	}
 	
-	public function saveMusic (seq:Array<SndObj>) {
+	/*public function saveMusic (seq:Array<SndObj>) {
 		for (i in 0...seq.length) {
-			if (seq[i].result == 1)	data.setPixel32(i, 65, 0xFFFFFFFF);
+			if (seq[i].result == 1)	data.setPixel32(i, 65, 0xFF000000);
 			else					data.setPixel32(i, 65, 0x00000000);
 		}
+	}*/
+	
+	public function saveNote (snd:SndObj) {
+		//trace("saveNote");
+		if (snd.result == 1)	data.setPixel32(snd.index, 65, 0xFF000000);
+		else					data.setPixel32(snd.index, 65, 0x00000000);
 	}
 	
 	function update (e:Event) {

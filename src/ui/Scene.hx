@@ -189,7 +189,7 @@ class Scene extends Sprite {
 				codePI.buttons[2].setDone(true);
 				codePI.buttons[2].setActive(false, true);
 		}
-		Main.instance.data.setPixel32(p.x, p.y, 0xFFFFFFFF);
+		Main.instance.data.setPixel32(p.x, p.y, 0xFF000000);
 	}
 	
 	public function editedArt (art:Art) {
