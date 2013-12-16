@@ -10,6 +10,7 @@ import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.ui.Keyboard;
+import haxe.Timer;
 import openfl.Assets;
 import ui.Button;
 import ui.UIObject;
@@ -130,7 +131,7 @@ class MusicGame extends Sprite {
 		if (recording) {
 			// Update current part
 			while (trackSC.position > seq[part].prevTotal && part < seq.length - 1) {
-				//seq[part].block.done();
+				if (part > 0)	Timer.delay(failAction, TOLERANCE_AFTER + 5);
 				part++;
 			}
 			// Scroll track
@@ -147,6 +148,11 @@ class MusicGame extends Sprite {
 		for (k in keys) {
 			k.justChanged = false;
 		}
+	}
+	
+	function failAction () {
+		if (seq[part - 1].result == 0)
+			seq[part - 1].block.done(false);
 	}
 	
 	function soundCompleteHandler (e:Event) {
