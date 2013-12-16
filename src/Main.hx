@@ -128,7 +128,8 @@ class Main extends Sprite {
 		
 		new Skills();
 		
-		startMode(Mode.MusicEdit);
+		//startMode(Mode.MusicEdit);
+		startMode(Mode.Title);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}

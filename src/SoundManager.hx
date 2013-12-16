@@ -1,7 +1,9 @@
 package ;
-import flash.media.Sound;
-import openfl.Assets;
 
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.media.SoundTransform;
+import openfl.Assets;
 
 /**
  * ...
@@ -10,18 +12,20 @@ import openfl.Assets;
 
 class SoundManager {
 	
+	public static var GLOBAL_VOL:Float = 0.5;
+	
 	static var cache:Map<String, Sound>;
 	
 	static public function init () {
 		cache = new Map<String, Sound>();
 	}
 	
-	static public function play (url:String) {
+	static public function play (url:String) :SoundChannel {
 		if (cache.exists(url)) {
-			cache.get(url).play();
+			return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
 		} else {
 			cache.set(url, Assets.getSound(url));
-			cache.get(url).play();
+			return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
 		}
 	}
 	

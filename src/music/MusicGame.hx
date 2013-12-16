@@ -6,7 +6,6 @@ import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.Lib;
-import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.ui.Keyboard;
@@ -20,15 +19,17 @@ import ui.UIObject;
  * @author 01101101
  */
 
+// TODO save to bitmap
+// TODO help
+// TODO spam mode
+
 class MusicGame extends Sprite {
 	
-	public static var TOLERANCE_BEFORE:Int = 80;
-	public static var TOLERANCE_AFTER:Int = 110;
+	public static var TOLERANCE_BEFORE:Int = 60;
+	public static var TOLERANCE_AFTER:Int = 100;
 	public static var SCALE:Int = 10;
 	
-	var trackA:Sound;
 	var trackASC:SoundChannel;
-	var trackB:Sound;
 	var trackBSC:SoundChannel;
 	
 	var seq:Array<SndObj>;
@@ -44,9 +45,6 @@ class MusicGame extends Sprite {
 	
 	public function new () {
 		super();
-		
-		trackA = Assets.getSound("snd/lead.mp3");
-		trackB = Assets.getSound("snd/playback.mp3");
 		
 		var diff = "normal";
 		if (Skills.instance.musicLevel == 3)	diff = "easy";
@@ -113,26 +111,22 @@ class MusicGame extends Sprite {
 	
 	function clickHandler (e:MouseEvent) {
 		if (e.currentTarget == recordButton) {
-			if (!recording) {
-				recordButton.setText("Stop");
-				recording = true;
-				play();
-			} else {
-				recordButton.setText("Record");
-				stop();
-			}
+			if (!recording)	play();
+			else			stop();
 		}
 	}
 	
 	function play () {
+		recording = true;
+		
 		for (snd in seq) {
 			if (snd.index > 0)	snd.block.reset(true);
 		}
-		//
-		trackASC = trackA.play(0, 0, new SoundTransform(0.5));
-		trackBSC = trackB.play(0, 0, new SoundTransform(0.5));
+		trackASC = SoundManager.play("snd/lead.mp3");
+		trackBSC = SoundManager.play("snd/playback.mp3");
 		trackBSC.addEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
 		//
+		recordButton.setText("Stop");
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 	}
@@ -155,6 +149,8 @@ class MusicGame extends Sprite {
 		track.y = 0;
 		
 		part = 0;
+		
+		recordButton.setText("Record");
 	}
 	
 	public function update () {
@@ -238,7 +234,7 @@ class MusicGame extends Sprite {
 		// If correct key AND in the BEFORE margin for next block, good
 		var inst:Int = seq[part + 1].inst;
 		if (key == getCorrectKey(inst) && trackBSC.position > seq[part].prevTotal + seq[part].length - TOLERANCE_BEFORE) {
-			trackASC.soundTransform = new SoundTransform(0.5);
+			trackASC.soundTransform = new SoundTransform(SoundManager.GLOBAL_VOL);
 			seq[part + 1].block.done();
 		}
 		// Else it is a fail of the current part
