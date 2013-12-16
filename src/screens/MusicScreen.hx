@@ -39,6 +39,7 @@ class MusicScreen extends Screen {
 	
 	override public function clean () {
 		super.clean();
+		musicGame.clean();
 		musicGame.stop();
 	}
 	

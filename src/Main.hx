@@ -134,7 +134,7 @@ class Main extends Sprite {
 		
 		//SoundManager.play("snd/ambient.mp3");
 		
-		startMode(Mode.Title);
+		startMode(Mode.MusicEdit);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}

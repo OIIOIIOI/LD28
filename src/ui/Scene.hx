@@ -111,9 +111,9 @@ class Scene extends Sprite {
 		musicPI.x = 80;
 		musicPI.y = 550;
 		
-		var tmp = new Bitmap(Main.instance.data);
+		/*var tmp = new Bitmap(Main.instance.data);
 		tmp.scaleX = tmp.scaleY = 2;
-		addChild(tmp);
+		addChild(tmp);*/
 	}
 	
 	public function start () {

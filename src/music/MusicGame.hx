@@ -8,6 +8,9 @@ import flash.events.MouseEvent;
 import flash.Lib;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
 import flash.ui.Keyboard;
 import haxe.Timer;
 import openfl.Assets;
@@ -18,10 +21,6 @@ import ui.UIObject;
  * ...
  * @author 01101101
  */
-
-// TODO save to bitmap
-// TODO help
-// TODO spam mode
 
 class MusicGame extends Sprite {
 	
@@ -42,6 +41,8 @@ class MusicGame extends Sprite {
 	var fading:Bool;
 	
 	var keys:Map<Int, Bool>;
+	
+	var helpTF:TextField;
 	
 	public function new () {
 		super();
@@ -102,11 +103,27 @@ class MusicGame extends Sprite {
 		recordButton.y = -20;
 		addChild(recordButton);
 		
+		// Help
+		var f = new TextFormat("Arial", 16, 0x000000);
+		f.align = TextFormatAlign.CENTER;
+		helpTF = new TextField();
+		helpTF.defaultTextFormat = f;
+		helpTF.selectable = false;
+		helpTF.multiline = helpTF.wordWrap = true;
+		helpTF.width = 160;
+		helpTF.height = 220;
+		helpTF.x = recordButton.x - 30;
+		helpTF.y = recordButton.y - 250;
+		helpTF.text = "Click Record or press SPACE to start/stop recording.\nTap the correct key (J, K or L) when the bottom of the blocks reach the horizontal bar.\nTest your game to listen to the results.";
+		addChild(helpTF);
+		
 		registerKeys();
 		
 		fading = false;
 		recording = false;
 		recordButton.addEventListener(MouseEvent.CLICK, clickHandler);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 	}
 	
 	function clickHandler (e:MouseEvent) {
@@ -127,13 +144,18 @@ class MusicGame extends Sprite {
 		trackBSC.addEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
 		//
 		recordButton.setText("Stop");
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+	}
+	
+	public function clean () {
+		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 	}
 	
 	public function stop () {
-		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+		//Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		//Lib.current.stage.removeEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 		
 		if (trackBSC != null) {
 			trackBSC.removeEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
@@ -213,13 +235,18 @@ class MusicGame extends Sprite {
 		keys.set(Keyboard.J, false);
 		keys.set(Keyboard.K, false);
 		keys.set(Keyboard.L, false);
+		keys.set(Keyboard.SPACE, false);
 	}
 	
 	function keyDownHandler (e:KeyboardEvent) {
 		if (keys.exists(e.keyCode)) {
 			if (!keys.get(e.keyCode)) {
 				keys.set(e.keyCode, true);
-				checkAction(e.keyCode);
+				if (e.keyCode == Keyboard.SPACE) {
+					if (!recording)	play();
+					else			stop();
+				}
+				else if (recording) checkAction(e.keyCode);
 			}
 		}
 	}
