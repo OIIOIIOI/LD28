@@ -69,7 +69,6 @@ class SetupScreen extends Screen {
 		f3 = new TextFormat(Main.LUCIDA.fontName, 18, 0x333333, true);
 		f3.align = TextFormatAlign.CENTER;
 		f4 = new TextFormat("Arial", 14, 0x333333, false);
-		//f4.align = TextFormatAlign.CENTER;
 		
 		tf = new TextField();
 		tf.defaultTextFormat = f;

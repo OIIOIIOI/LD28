@@ -56,13 +56,13 @@ class ArtEditor extends Sprite {
 		assets.set(Art.Block, new Shape());
 		assets.set(Art.Hero, new Shape());
 		assets.set(Art.Enemy, new Shape());
-		assets.set(Art.Treasure, new Shape());
+		assets.set(Art.Goal, new Shape());
 		// Init coords
 		coords = new Map<Art, Rectangle>();
 		coords.set(Art.Block, new Rectangle(0, 1, Level.GRID_SIZE, Level.GRID_SIZE));
 		coords.set(Art.Hero, new Rectangle(Level.GRID_SIZE, 1, Level.GRID_SIZE, Level.GRID_SIZE * 2));
 		coords.set(Art.Enemy, new Rectangle(0, Level.GRID_SIZE + 1, Level.GRID_SIZE, Level.GRID_SIZE));
-		coords.set(Art.Treasure, new Rectangle(Level.GRID_SIZE * 2, 1, Level.GRID_SIZE, Level.GRID_SIZE * 2));
+		coords.set(Art.Goal, new Rectangle(Level.GRID_SIZE * 2, 1, Level.GRID_SIZE, Level.GRID_SIZE * 2));
 		// Init data
 		for (k in assets.keys()) {
 			resetData(k);
@@ -105,7 +105,7 @@ class ArtEditor extends Sprite {
 			case Art.Block:		canvas.graphics.drawRect(0, 0, Level.GRID_SIZE, Level.GRID_SIZE);
 			case Art.Hero:		canvas.graphics.drawRect(0, 0, Level.GRID_SIZE, Level.GRID_SIZE * 2);
 			case Art.Enemy:		canvas.graphics.drawRect(0, 0, Level.GRID_SIZE, Level.GRID_SIZE);
-			case Art.Treasure:	canvas.graphics.drawRect(0, 0, Level.GRID_SIZE, Level.GRID_SIZE * 2);
+			case Art.Goal:	canvas.graphics.drawRect(0, 0, Level.GRID_SIZE, Level.GRID_SIZE * 2);
 		}
 		canvas.graphics.endFill();
 	}
@@ -258,14 +258,13 @@ class ArtEditor extends Sprite {
 	}
 	//}
 	
-	
 }
 
 enum Art {
 	Block;
 	Hero;
 	Enemy;
-	Treasure;
+	Goal;
 }
 
 

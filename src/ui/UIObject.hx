@@ -91,6 +91,11 @@ class UIObject extends Sprite {
 		e.preventDefault();
 	}
 	
+	public function clean () {
+		data.dispose();
+		data = null;
+	}
+	
 	public static function getEmptyFrames (w:Int, h:Int, n:Int = 1) :Array<Rectangle> {
 		var f = new Array<Rectangle>();
 		for (i in 0...n) {

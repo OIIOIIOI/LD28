@@ -60,7 +60,7 @@ class PFLevel extends Level {
 				}
 				else if (px == C_END && end == null) {
 					end = new IntPoint(x, y);
-					ArtEditor.instance.paint(Art.Treasure, spriteData, new Point(x * Level.GRID_SIZE, y * Level.GRID_SIZE));
+					ArtEditor.instance.paint(Art.Goal, spriteData, new Point(x * Level.GRID_SIZE, y * Level.GRID_SIZE));
 				}
 				else if (px == C_ENEMY) {
 					enemies.push(new IntPoint(x, y));

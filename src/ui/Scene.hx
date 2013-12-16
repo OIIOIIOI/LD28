@@ -92,20 +92,16 @@ class Scene extends Sprite {
 		mainPI.x = 20;
 		mainPI.y = 80;
 		mainPI.rotation = 4;
-		//foregroundLayer.addChild(mainPI);
 		codePI = new PostIt("CODE", ["-basics ", "-enemies ", "-jump "], 0, codePIClickHandler);
 		codePI.x = mainPI.x + 10;
 		codePI.y = mainPI.y + 150;
-		//foregroundLayer.addChild(codePI);
-		artPI = new PostIt("ART", ["-hero ", "-enemy ", "-block ", "-treasure "], 0, artPIClickHandler);
+		artPI = new PostIt("ART", ["-hero ", "-enemy ", "-block ", "-goal "], 0, artPIClickHandler);
 		artPI.x = mainPI.x - 5;
 		artPI.y = codePI.y + 150;
 		artPI.rotation = -4;
-		//foregroundLayer.addChild(artPI);
 		musicPI = new PostIt("MUSIC", ["-record some "], 1, musicPIClickHandler);
 		musicPI.x = 80;
 		musicPI.y = 550;
-		//foregroundLayer.addChild(musicPI);
 	}
 	
 	public function start () {
@@ -153,11 +149,12 @@ class Scene extends Sprite {
 	function musicPIClickHandler (e:MouseEvent) {
 		var i:Int = cast(e.currentTarget, Button).customData;
 		switch (i) {
-			case 0:	Main.instance.executeAction("musicRecord");
+			case 0:	Main.instance.executeAction("recordMusic");
 		}
 	}
 	
 	public function clearScreen () {
+		if (screen == null)	return;
 		screen.clean();
 		screenLayer.removeChild(screen);
 		screen = null;

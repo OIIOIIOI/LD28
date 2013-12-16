@@ -24,12 +24,10 @@ import game.PFGame;
 import music.MusicTest;
 import music.MusicTest2;
 import openfl.Assets;
-import screens.DesktopScreen;
+import screens.GameScreen;
 import screens.Screen;
 import screens.SetupScreen;
-import screens.SkillSetupScreen;
 import screens.TitleScreen;
-import screens.WaitingScreen;
 import ui.Button;
 import ui.Scene;
 
@@ -60,7 +58,7 @@ class Main extends Sprite {
 	var mode:Mode;
 	var screen:Screen;
 	
-	var playGame:PFGame;
+	//var playGame:PFGame;
 	
 	#if extLoad
 	var debug:Array<String>;
@@ -159,10 +157,6 @@ class Main extends Sprite {
 		switch (mode) {
 			case Mode.ArtEdit:
 				if (contains(ArtEditor.instance))	removeChild(ArtEditor.instance);
-			case Mode.PlayTest:
-				if (contains(playGame))	removeChild(playGame);
-				playGame.clean();
-				playGame = null;
 			default:
 		}
 	}
@@ -176,24 +170,10 @@ class Main extends Sprite {
 				screen = new TitleScreen();
 			case Mode.Setup:
 				screen = new SetupScreen();
-			/*case Mode.SkillSetup:
-				screen = new SkillSetupScreen();
-			case Mode.Waiting:
-				screen = new WaitingScreen();*/
-			//case Mode.Desktop:
-				//screen = new DesktopScreen();
 			case Mode.ArtEdit:
 				addChild(ArtEditor.instance);
-			/*case Mode.PlayTest:
-				#if extLoad
-				playGame = new PFGame(ArtEditor.instance.data, debug);
-				#else
-				playGame = new PFGame(ArtEditor.instance.data);
-				#end
-				playGame.scaleX = playGame.scaleY = Level.SCALE;
-				playGame.x = 140;
-				playGame.y = 120;
-				addChild(playGame);*/
+			case Mode.PlayTest:
+				screen = new GameScreen();
 			default:
 		}
 		mode = m;
@@ -212,8 +192,12 @@ class Main extends Sprite {
 				ArtEditor.instance.edit(Art.Enemy);
 				startMode(Mode.ArtEdit);
 			case "artTreasure":
-				ArtEditor.instance.edit(Art.Treasure);
+				ArtEditor.instance.edit(Art.Goal);
 				startMode(Mode.ArtEdit);
+			case "testGame":
+				startMode(Mode.PlayTest);
+			case "recordMusic":
+				startMode(Mode.MusicEdit);
 		}
 	}
 	
@@ -222,12 +206,6 @@ class Main extends Sprite {
 		scene.update();
 		// Time
 		if (Clock.instance != null)	Clock.instance.update();
-		// Mode specific
-		/*switch (mode) {
-			case Mode.PlayTest:
-				playGame.update();
-			default:
-		}*/
 	}
 	
 }
@@ -235,9 +213,6 @@ class Main extends Sprite {
 enum Mode {
 	Title;
 	Setup;
-	//SkillSetup;
-	//Waiting;
-	//Desktop;
 	CodeEdit;
 	ArtEdit;
 	MusicEdit;

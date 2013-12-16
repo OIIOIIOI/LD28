@@ -281,6 +281,11 @@ class Entity {
 		spriteData.fillRect(spriteData.rect, 0xFFFF00FF);
 	}
 	
+	public function clean () {
+		spriteData.dispose();
+		spriteData = null;
+	}
+	
 	public function top () :Float {		return (cy + yr); }
 	public function bottom () :Float {	return (cy + h + yr); }
 	public function left () :Float {	return (cx + xr); }

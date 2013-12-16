@@ -73,11 +73,13 @@ class PFGame extends Game {
 	
 	public function clean () {
 		if (contains(hero.sprite))	removeChild(hero.sprite);
-		hero = null;
+		//hero.clean();
+		//hero = null;
 		while (enemies.length > 0) {
 			var e = enemies.shift();
 			if (contains(e.sprite))	removeChild(e.sprite);
-			e = null;
+			//e.clean();
+			//e = null;
 		}
 	}
 	
@@ -100,6 +102,7 @@ class PFGame extends Game {
 		if (keys.get(Keyboard.ENTER)) {
 			clean();
 			restartLevel();
+			return;
 		}
 		// Inputs
 		if (hero.alive) {
