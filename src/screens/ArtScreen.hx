@@ -1,11 +1,14 @@
 package screens;
 
 import art.ArtEditor;
+import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
+import flash.geom.Rectangle;
 import flash.Lib;
 import game.Level;
 import ui.Button;
+import ui.Palette;
 import ui.UIObject;
 import ui.Window;
 
@@ -36,6 +39,13 @@ class ArtScreen extends Screen {
 	var zoomOutButton:Button;
 	var zoomMax:Int = 5;
 	var zoomMin:Int = 1;
+	
+	var brushAButton:Button;
+	var brushBButton:Button;
+	var brushCButton:Button;
+	
+	var palette:Palette;
+	
 	var clearButton:Button;
 	
 	public function new () {
@@ -46,36 +56,54 @@ class ArtScreen extends Screen {
 		first = new IntPoint();
 		last = new IntPoint();
 		
-		brushRadius = 2;
-		brushColor = 0x666699;
-		zoomLevel = zoomMin;
-		
 		// UI
 		
 		winContent = new Sprite();
 		
 		canvas = new Sprite();
 		
-		zoomOutButton = new Button(UIObject.getEmptyFrames(32, 32));
-		zoomOutButton.setText("-", 0, 7);
-		zoomOutButton.x = zoomOutButton.y = 8;
+		zoomOutButton = new Button([new Rectangle(30, 16, 30, 30)]);
+		zoomOutButton.x = zoomOutButton.y = 16;
 		
-		zoomInButton = new Button(UIObject.getEmptyFrames(32, 32));
-		zoomInButton.setText("+", 0, 7);
-		zoomInButton.x = zoomOutButton.x + zoomOutButton.width + 2;
-		zoomInButton.y = zoomOutButton.y;
+		zoomInButton = new Button([new Rectangle(60, 16, 30, 30)]);
+		zoomInButton.x = zoomOutButton.x;
+		zoomInButton.y = zoomOutButton.y + zoomOutButton.height + 2;
 		
-		clearButton = new Button(UIObject.getEmptyFrames(66, 32));
-		clearButton.setText("clear", 0, 7);
-		clearButton.x = zoomOutButton.x;
-		clearButton.y = zoomOutButton.y + zoomOutButton.height + 2;
+		brushAButton = getBrushButton(3);
+		brushAButton.x = zoomInButton.x;
+		brushAButton.y = zoomInButton.y + zoomInButton.height + 6;
+		
+		brushBButton = getBrushButton(6);
+		brushBButton.x = brushAButton.x;
+		brushBButton.y = brushAButton.y + brushAButton.height + 2;
+		
+		brushCButton = getBrushButton(9);
+		brushCButton.x = brushBButton.x;
+		brushCButton.y = brushBButton.y + brushBButton.height + 2;
+		
+		palette = new Palette(paletteClickHandler);
+		palette.x = zoomOutButton.x + zoomOutButton.width + 6;
+		palette.y = zoomOutButton.y;
+		
+		clearButton = new Button([new Rectangle(0, 16, 30, 30)]);
+		clearButton.x = Window.WIDTH - clearButton.width - 16;
+		clearButton.y = Window.HEIGHT - clearButton.height - 16;
 		
 		winContent.addChild(canvas);
 		winContent.addChild(zoomInButton);
 		winContent.addChild(zoomOutButton);
+		winContent.addChild(brushAButton);
+		winContent.addChild(brushBButton);
+		winContent.addChild(brushCButton);
+		winContent.addChild(palette);
 		winContent.addChild(clearButton);
 		
+		brushRadius = 3;
+		brushColor = 0x666699;
+		zoomLevel = zoomMin;
+		
 		// Display
+		refreshUI();
 		setCanvasSize(AE.current);
 		applyZoom();
 		winContent.addChild(AE.assets.get(AE.current));
@@ -88,7 +116,28 @@ class ArtScreen extends Screen {
 		canvas.addEventListener(MouseEvent.MOUSE_DOWN, downHandler, false, 0, true);
 		zoomInButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
 		zoomOutButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+		brushAButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+		brushBButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+		brushCButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
 		clearButton.addEventListener(MouseEvent.CLICK, clickHandler, false, 0, true);
+	}
+	
+	function refreshUI () {
+		brushAButton.setActive(!(brushRadius == brushAButton.customData), true);
+		brushBButton.setActive(!(brushRadius == brushBButton.customData), true);
+		brushCButton.setActive(!(brushRadius == brushCButton.customData), true);
+	}
+	
+	function getBrushButton (radius:Int) :Button {
+		var b = new Button(UIObject.getEmptyFrames(30, 30), 0xFF586467, 0xFFC5C9CA);
+		b.customData = radius;
+		var s = new Shape();
+		s.graphics.beginFill(0x1D2224);
+		s.graphics.drawCircle(0, 0, radius);
+		s.graphics.endFill();
+		s.x = s.y = 15;
+		b.addChild(s);
+		return b;
 	}
 	
 	function clickHandler (e:MouseEvent) {
@@ -98,10 +147,18 @@ class ArtScreen extends Screen {
 		} else if (e.currentTarget == zoomOutButton && zoomLevel > zoomMin) {
 			zoomLevel--;
 			applyZoom();
+		} else if (e.currentTarget == brushAButton || e.currentTarget == brushBButton || e.currentTarget == brushCButton) {
+			brushRadius = cast(e.currentTarget).customData;
+			refreshUI();
 		} else if (e.currentTarget == clearButton) {
 			AE.assets.get(AE.current).graphics.clear();
 			AE.resetData(AE.current);
 		}
+	}
+	
+	function paletteClickHandler (e:MouseEvent) {
+		var b:Button = cast(e.currentTarget);
+		brushColor = b.customData;
 	}
 	
 	// Reset the canvas to the correct size
@@ -128,10 +185,10 @@ class ArtScreen extends Screen {
 		AE.assets.get(AE.current).x = canvas.x;
 		AE.assets.get(AE.current).y = canvas.y;
 		// Update UI
-		if (zoomLevel == zoomMax)	zoomInButton.alpha = 0.5;
-		else						zoomInButton.alpha = 1;
-		if (zoomLevel == zoomMin)	zoomOutButton.alpha = 0.5;
-		else						zoomOutButton.alpha = 1;
+		if (zoomLevel == zoomMax)	zoomInButton.setActive(false, true);
+		else						zoomInButton.setActive(true, true);
+		if (zoomLevel == zoomMin)	zoomOutButton.setActive(false, true);
+		else						zoomOutButton.setActive(true, true);
 	}
 	
 	//{ ---- MOUSE EVENT HANDLERS ----

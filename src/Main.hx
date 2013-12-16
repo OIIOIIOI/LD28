@@ -126,9 +126,11 @@ class Main extends Sprite {
 		new ArtEditor(startData);
 		
 		new Skills();
+		//Skills.instance.codeLevel = 3;
+		//Skills.instance.artLevel = 3;
+		//Skills.instance.musicLevel = 3;
 		
-		//startMode(Mode.MusicEdit);
-		startMode(Mode.Title);
+		startMode(Mode.Setup);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -152,12 +154,6 @@ class Main extends Sprite {
 	function closeMode () {
 		// Clear screen
 		scene.clearScreen();
-		// Mode specific
-		/*switch (mode) {
-			case Mode.ArtEdit:
-				if (contains(ArtEditor.instance))	removeChild(ArtEditor.instance);
-			default:
-		}*/
 	}
 	
 	public function startMode (m:Mode) {
@@ -170,7 +166,6 @@ class Main extends Sprite {
 			case Mode.Setup:
 				screen = new SetupScreen();
 			case Mode.ArtEdit:
-				//addChild(ArtEditor.instance);
 				screen = new ArtScreen();
 			case Mode.PlayTest:
 				screen = new GameScreen();
@@ -206,8 +201,6 @@ class Main extends Sprite {
 	function update (e:Event) {
 		// Scene update
 		scene.update();
-		// Time
-		if (Clock.instance != null)	Clock.instance.update();
 	}
 	
 }

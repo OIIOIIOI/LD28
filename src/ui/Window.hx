@@ -39,7 +39,7 @@ class Window extends Sprite {
 		addChild(titleLabel);
 		
 		if (closeCallback != null) {
-			closeButton = new Button([new Rectangle(0, 16, 22, 22)]);
+			closeButton = new Button([new Rectangle(0, 32, 14, 14)]);
 			closeButton.x = background.width - closeButton.width + 2;
 			closeButton.y = -4;
 			addChild(closeButton);
