@@ -114,6 +114,8 @@ class Main extends Sprite {
 		LEVELS = Assets.getBitmapData("img/levels.png");
 		#end
 		
+		SoundManager.init();
+		
 		setupTextStuff();
 		
 		scene = new Scene();
@@ -178,8 +180,8 @@ class Main extends Sprite {
 				screen = new SkillSetupScreen();
 			case Mode.Waiting:
 				screen = new WaitingScreen();*/
-			case Mode.Desktop:
-				screen = new DesktopScreen();
+			//case Mode.Desktop:
+				//screen = new DesktopScreen();
 			case Mode.ArtEdit:
 				addChild(ArtEditor.instance);
 			/*case Mode.PlayTest:
@@ -235,7 +237,7 @@ enum Mode {
 	Setup;
 	//SkillSetup;
 	//Waiting;
-	Desktop;
+	//Desktop;
 	CodeEdit;
 	ArtEdit;
 	MusicEdit;

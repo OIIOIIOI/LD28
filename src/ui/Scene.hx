@@ -4,6 +4,7 @@ import flash.display.Bitmap;
 import flash.display.BlendMode;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
+import flash.media.Sound;
 import haxe.Timer;
 import openfl.Assets;
 import screens.Screen;
@@ -87,39 +88,38 @@ class Scene extends Sprite {
 		foregroundLayer.addChild(Clock.instance.sprite);
 		skyLayer.addChild(Clock.instance.skySprite);
 		// Post-its
-		mainPI = new PostIt("TODO", ["MAKE a game", "TEST it", "SUBMIT it"], 0, mainPIClickHandler);
+		mainPI = new PostIt("TODO", ["-MAKE a game ", "-TEST it ", "-SUBMIT it "], 0, mainPIClickHandler);
 		mainPI.x = 20;
 		mainPI.y = 80;
 		mainPI.rotation = 4;
 		//foregroundLayer.addChild(mainPI);
-		codePI = new PostIt("CODE", ["basics", "enemies", "jump"], 0, codePIClickHandler);
+		codePI = new PostIt("CODE", ["-basics ", "-enemies ", "-jump "], 0, codePIClickHandler);
 		codePI.x = mainPI.x + 10;
 		codePI.y = mainPI.y + 150;
 		//foregroundLayer.addChild(codePI);
-		artPI = new PostIt("ART", ["hero", "enemy", "block", "treasure"], 0, artPIClickHandler);
+		artPI = new PostIt("ART", ["-hero ", "-enemy ", "-block ", "-treasure "], 0, artPIClickHandler);
 		artPI.x = mainPI.x - 5;
 		artPI.y = codePI.y + 150;
 		artPI.rotation = -4;
 		//foregroundLayer.addChild(artPI);
-		musicPI = new PostIt("MUSIC", ["record some"], 1, musicPIClickHandler);
+		musicPI = new PostIt("MUSIC", ["-record some "], 1, musicPIClickHandler);
 		musicPI.x = 80;
 		musicPI.y = 550;
 		//foregroundLayer.addChild(musicPI);
 	}
 	
 	public function start () {
-		foregroundLayer.addChild(mainPI);
-		Timer.delay(foregroundLayer.addChild.bind(codePI), 500);
-		showPI(artPI);
-		//Timer.delay(foregroundLayer.addChild.bind(codePI), 500);
-		//Timer.delay(foregroundLayer.addChild.bind(codePI), 500);
-		
+		showPI(mainPI);
+		Timer.delay(showPI.bind(codePI), 500);
+		Timer.delay(showPI.bind(artPI), 900);
+		Timer.delay(showPI.bind(musicPI), 1200);
+		//
 		Clock.instance.pause(false);
 	}
 	
 	function showPI (pi:PostIt) {
 		foregroundLayer.addChild(pi);
-		Assets.getSound("snd/sfx/clock.mp3");
+		SoundManager.play("snd/sfx/postit.mp3");
 	}
 	
 	function mainPIClickHandler (e:MouseEvent) {

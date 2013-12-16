@@ -176,7 +176,7 @@ class SetupScreen extends Screen {
 			tf3.visible = false;
 			//
 			//count = 10;
-			count = 0;
+			count = -1;
 			
 			white.y = 360 - 95;
 			tf3.y = white.y + 5;

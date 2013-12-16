@@ -77,12 +77,6 @@ class ArtEditor extends Sprite {
 		
 		setupUI();
 		
-		// TODO Remove this
-		var b = new Bitmap(data);
-		b.x = 0;
-		b.y = 120;
-		addChild(b);
-		
 		canvas = new Sprite();
 		windowContent.addChild(canvas);
 		
