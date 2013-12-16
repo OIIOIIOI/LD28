@@ -118,6 +118,7 @@ class CodeGame extends Sprite {
 	
 	function nextWord () {
 		if (words.length == 0) {
+			progress.refresh(1);
 			moduleComplete();
 		} else {
 			currentIndex = 0;
@@ -159,8 +160,13 @@ class CodeGame extends Sprite {
 	}
 	
 	public static function getLength (module:Module) :Int {
-		// TODO depending on module and skill
-		return 25;
+		var l = switch (module) {
+			case Module.Basics:		120;
+			case Module.Enemies:	180;
+			case Module.Jump:		240;
+		}
+		l = Std.int(l / Skills.instance.codeLevel);
+		return l;
 	}
 	
 	public static function getWords (l:Int) :Array<String> {

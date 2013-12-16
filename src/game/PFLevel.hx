@@ -3,6 +3,7 @@ import art.ArtEditor;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
+import openfl.Assets;
 
 
 /**
@@ -50,7 +51,12 @@ class PFLevel extends Level {
 	override public function load (xx:Int = 0, yy:Int = 0) {
 		super.load(xx, yy);
 		// Clear data
-		spriteData.fillRect(spriteData.rect, 0xFFFFFFFF);
+		if (Skills.instance.artLevel == 3) {
+			var url:String = "img/bg/" + ["dungeon", "snow", "sub"][Std.random(3)] + Std.random(3) + ".png";
+			spriteData.copyPixels(Assets.getBitmapData(url), spriteData.rect, new Point());
+		} else {
+			spriteData.fillRect(spriteData.rect, 0xFFFFFFFF);
+		}
 		// Init enemies
 		enemies = new Array();
 		// Parse data
