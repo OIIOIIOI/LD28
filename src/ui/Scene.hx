@@ -1,5 +1,7 @@
 package ui;
 
+import art.ArtEditor.Art;
+import code.CodeGame.Module;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
@@ -90,7 +92,6 @@ class Scene extends Sprite {
 		skyLayer.addChild(Clock.instance.skySprite);
 		// Post-its
 		mainPI = new PostIt("TODO", ["-FIND an idea ", "-TEST the game ", "-SUBMIT it "], 0, mainPIClickHandler);
-		mainPI.buttons[0].setDone(true);
 		mainPI.buttons[1].setActive(false, true);
 		mainPI.buttons[2].setActive(false, true);
 		mainPI.x = 10;
@@ -117,7 +118,8 @@ class Scene extends Sprite {
 	
 	public function start () {
 		showPI(mainPI);
-		Timer.delay(showPI.bind(codePI), 500);
+		Timer.delay(mainPI.buttons[0].setDone.bind(true), 500);
+		Timer.delay(showPI.bind(codePI), 750);
 		//
 		Clock.instance.pause(false);
 	}
@@ -128,15 +130,16 @@ class Scene extends Sprite {
 	}
 	
 	function mainPIClickHandler (e:MouseEvent) {
-		var i:Int = cast(e.currentTarget, Button).customData;
+		if (!cast(e.currentTarget, PIItem).active)	return;
+		var i:Int = cast(e.currentTarget, PIItem).customData;
 		switch (i) {
-			case 0:	Main.instance.executeAction("makeGame");
 			case 1:	Main.instance.executeAction("testGame");
 			case 2:	Main.instance.executeAction("submitGame");
 		}
 	}
 	
 	function codePIClickHandler (e:MouseEvent) {
+		if (!cast(e.currentTarget, PIItem).active)	return;
 		var i:Int = cast(e.currentTarget, Button).customData;
 		switch (i) {
 			case 0:	Main.instance.executeAction("codeBasics");
@@ -146,12 +149,13 @@ class Scene extends Sprite {
 	}
 	
 	function artPIClickHandler (e:MouseEvent) {
+		if (!cast(e.currentTarget, PIItem).active)	return;
 		var i:Int = cast(e.currentTarget, Button).customData;
 		switch (i) {
-			case 0:	Main.instance.executeAction("artHero");
-			case 1:	Main.instance.executeAction("artEnemy");
-			case 2:	Main.instance.executeAction("artBlock");
-			case 3:	Main.instance.executeAction("artTreasure");
+			case 0:	Main.instance.executeAction("artBlock");
+			case 1:	Main.instance.executeAction("artHero");
+			case 2:	Main.instance.executeAction("artTreasure");
+			case 3:	Main.instance.executeAction("artEnemy");
 		}
 	}
 	
@@ -160,6 +164,41 @@ class Scene extends Sprite {
 		switch (i) {
 			case 0:	Main.instance.executeAction("recordMusic");
 		}
+	}
+	
+	public function completeModule (m:Module) {
+		var p:IntPoint;
+		switch (m) {
+			case Module.Basics:
+				p = new IntPoint(0, 64);
+				codePI.buttons[0].setDone(true);
+				Timer.delay(codePI.buttons[0].setActive.bind(false, true), 250 + Std.random(100));
+				Timer.delay(codePI.buttons[1].setActive.bind(true, true), 500 + Std.random(100));
+				Timer.delay(mainPI.buttons[1].setActive.bind(true, true), 750 + Std.random(100));
+				Timer.delay(mainPI.buttons[2].setActive.bind(true, true), 1000 + Std.random(100));
+				Timer.delay(showPI.bind(artPI), 1250 + Std.random(100));
+				Timer.delay(showPI.bind(musicPI), 1500 + Std.random(100));
+			case Module.Enemies:
+				p = new IntPoint(1, 64);
+				codePI.buttons[1].setDone(true);
+				codePI.buttons[1].setActive(false, true);
+				codePI.buttons[2].setActive(true, true);
+				artPI.buttons[3].setActive(true, true);
+			case Module.Jump:
+				p = new IntPoint(2, 64);
+				codePI.buttons[2].setDone(true);
+				codePI.buttons[2].setActive(false, true);
+		}
+		Main.instance.data.setPixel32(p.x, p.y, 0xFFFFFFFF);
+	}
+	
+	public function editedArt (art:Art) {
+		/*switch (art) {
+			case Art.Block:	artPI.buttons[0].setDone(true);
+			case Art.Hero:	artPI.buttons[1].setDone(true);
+			case Art.Goal:	artPI.buttons[2].setDone(true);
+			case Art.Enemy:	artPI.buttons[3].setDone(true);
+		}*/
 	}
 	
 	public function clearScreen () {

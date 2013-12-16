@@ -72,6 +72,8 @@ class ArtEditor extends Sprite {
 		Main.TAR.height = coords.get(current).height;
 		// Draw
 		Main.instance.data.draw(assets.get(current), Main.TAM, null, null, Main.TAR);
+		// Post-it
+		Main.instance.scene.editedArt(current);
 	}
 	
 	public function resetData (art:Art, fillShape:Bool = false) {

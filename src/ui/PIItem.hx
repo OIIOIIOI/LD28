@@ -40,6 +40,12 @@ class PIItem extends RollButton {
 		done = d;
 		line.visible = done;
 		setActive(!done, true);
+		if (d)	SoundManager.play("snd/sfx/pen0" + Std.random(3) + ".mp3");
+	}
+	
+	override public function setActive (a:Bool = true, setAlpha:Bool = false) {
+		super.setActive(a, setAlpha);
+		if (a && setAlpha)	SoundManager.play("snd/sfx/pen0" + Std.random(3) + ".mp3");
 	}
 	
 }

@@ -211,15 +211,6 @@ class Main extends Sprite {
 		}
 	}
 	
-	public function completeModule (m:Module) {
-		var p:IntPoint = switch (m) {
-			case Module.Basics:		new IntPoint(0, 64);
-			case Module.Enemies:	new IntPoint(1, 64);
-			case Module.Jump:		new IntPoint(2, 64);
-		}
-		data.setPixel32(p.x, p.y, 0xFFFFFFFF);
-	}
-	
 	public function saveMusic (seq:Array<SndObj>) {
 		for (i in 0...seq.length) {
 			if (seq[i].result == 1)	data.setPixel32(i, 65, 0xFFFFFFFF);

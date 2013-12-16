@@ -14,7 +14,6 @@ typedef Params = {
 	var basics:Bool;
 	var enemies:Bool;
 	var jump:Bool;
-	var particles:Bool;
 }
 
 class PFGame extends Game {
@@ -48,11 +47,10 @@ class PFGame extends Game {
 	}
 	
 	function parseData (data:BitmapData) {
-		params = { basics:false, jump:false, enemies:false, particles:false };
-		params.basics =		(data.getPixel32(0, 0) == cast(0xFFFFFFFF));
-		params.enemies =	(data.getPixel32(1, 0) == cast(0xFFFFFFFF));
-		params.jump =		(data.getPixel32(2, 0) == cast(0xFFFFFFFF));
-		params.particles =	(data.getPixel32(3, 0) == cast(0xFFFFFFFF));
+		params = { basics:false, jump:false, enemies:false };
+		params.basics =		(data.getPixel32(0, 64) == cast(0xFFFFFFFF));
+		params.enemies =	(data.getPixel32(1, 64) == cast(0xFFFFFFFF));
+		params.jump =		(data.getPixel32(2, 64) == cast(0xFFFFFFFF));
 	}
 	
 	#if extLoad

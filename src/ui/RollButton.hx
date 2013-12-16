@@ -34,6 +34,8 @@ class RollButton extends Button {
 		} else {
 			removeEventListener(MouseEvent.ROLL_OVER, overHandler);
 			removeEventListener(MouseEvent.ROLL_OUT, outHandler);
+			if (highlight.visible)	highlight.visible = false;
+			if (tf != null)	tf.setTextFormat(Main.FORMAT_SUB);
 		}
 	}
 	

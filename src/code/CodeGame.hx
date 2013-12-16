@@ -99,6 +99,7 @@ class CodeGame extends Sprite {
 	}
 	
 	public function update () {
+		if (locked)	return;
 		if (Std.random(8) == 0)	dummyTF.text = DUMMY_TEXT.substr(Std.random(DUMMY_TEXT.length - 2002), 2000);
 		progress.refresh(count / total);
 		if (count / total >= 1)	moduleComplete();
@@ -129,7 +130,7 @@ class CodeGame extends Sprite {
 		stop();
 		wordBg.visible = false;
 		wordLabel.visible = false;
-		Main.instance.completeModule(current);
+		Main.instance.scene.completeModule(current);
 	}
 	
 	function refreshUI () {
@@ -142,6 +143,7 @@ class CodeGame extends Sprite {
 	}
 	
 	public function stop () {
+		locked = true;
 		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 	}
 	
