@@ -113,9 +113,14 @@ class MusicGame extends Sprite {
 	
 	function clickHandler (e:MouseEvent) {
 		if (e.currentTarget == recordButton) {
-			recordButton.setActive(false, true);
-			recording = true;
-			play();
+			if (!recording) {
+				recordButton.setText("Stop");
+				recording = true;
+				play();
+			} else {
+				recordButton.setText("Record");
+				stop();
+			}
 		}
 	}
 	
@@ -130,6 +135,26 @@ class MusicGame extends Sprite {
 		//
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+	}
+	
+	public function stop () {
+		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+		
+		trackBSC.removeEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
+		trackBSC.stop();
+		trackASC.stop();
+		
+		recording = false;
+		fading = false;
+		
+		for (snd in seq) {
+			snd.block.reset();
+		}
+		track.alpha = 1;
+		track.y = 0;
+		
+		part = 0;
 	}
 	
 	public function update () {
@@ -161,13 +186,7 @@ class MusicGame extends Sprite {
 	}
 	
 	function endRecording () {
-		fading = false;
-		for (snd in seq) {
-			snd.block.reset();
-		}
-		track.alpha = 1;
-		track.y = 0;
-		recordButton.setActive(true, true);
+		stop();
 	}
 	
 	// Draw blocks
@@ -200,7 +219,7 @@ class MusicGame extends Sprite {
 		if (keys.exists(e.keyCode)) {
 			if (!keys.get(e.keyCode)) {
 				keys.set(e.keyCode, true);
-				if (part > 0)	checkAction(e.keyCode);
+				checkAction(e.keyCode);
 			}
 		}
 	}
