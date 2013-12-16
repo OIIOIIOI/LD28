@@ -36,10 +36,9 @@ class Level {
 		}
 	}
 	
-	public function load (lvl:Int = 0, n:Int = -1) {
-		if (n == -1)	n = 0;
-		Main.TAR.x = n * WIDTH;
-		Main.TAR.y = lvl * HEIGHT;
+	public function load (xx:Int = 0, yy:Int = 0) {
+		Main.TAR.x = xx * WIDTH;
+		Main.TAR.y = yy * HEIGHT;
 		Main.TAR.width = WIDTH;
 		Main.TAR.height = HEIGHT;
 		Main.TAP.x = Main.TAP.y = 0;

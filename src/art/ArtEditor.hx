@@ -53,7 +53,8 @@ class ArtEditor extends Sprite {
 		coords.set(Art.Goal, new Rectangle(Level.GRID_SIZE * 2, 0, Level.GRID_SIZE, Level.GRID_SIZE * 2));
 		// Init data
 		for (k in assets.keys()) {
-			resetData(k, true);
+			//resetData(k, true);// true to paint the rectangles in the shapes
+			resetData(k);
 		}
 		
 		current = Art.Hero;

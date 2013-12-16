@@ -47,8 +47,10 @@ class PFLevel extends Level {
 		enemies.push(new IntPoint(Std.random(Level.WIDTH), 0));
 	}
 	
-	override public function load (lvl:Int = 0, n:Int = -1) {
-		super.load(lvl, n);
+	override public function load (xx:Int = 0, yy:Int = 0) {
+		super.load(xx, yy);
+		// Clear data
+		spriteData.fillRect(spriteData.rect, 0xFFFFFFFF);
 		// Init enemies
 		enemies = new Array();
 		// Parse data
@@ -70,6 +72,31 @@ class PFLevel extends Level {
 				}
 			}
 		}
+		if (start == null) {
+			start = new IntPoint(0, 0);
+		}
+		if (end == null) {
+			end = new IntPoint(19, 0);
+			ArtEditor.instance.paint(Art.Goal, spriteData, new Point(end.x * Level.GRID_SIZE, end.y * Level.GRID_SIZE));
+		}
+	}
+	
+	public static function selectLevel (num:Int) :IntPoint {
+		var a:Array<IntPoint> = [new IntPoint()];
+		if (num == 1)		a = [new IntPoint(0, 1)];
+		else if (num == 2)	a = [new IntPoint(0, 2)];
+		else if (num == 3)	a = [new IntPoint(0, 3)];
+		return a[Std.random(a.length)];
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
