@@ -21,10 +21,9 @@ import flash.text.TextFormatAlign;
 import game.Game;
 import game.Level;
 import game.PFGame;
-import music.MusicTest;
-import music.MusicTest2;
 import openfl.Assets;
 import screens.GameScreen;
+import screens.MusicScreen;
 import screens.Screen;
 import screens.SetupScreen;
 import screens.TitleScreen;
@@ -68,8 +67,6 @@ class Main extends Sprite {
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 		Lib.current.addChild(new Main());
-		//Lib.current.addChild(new MusicTest2());
-		//Lib.current.addChild(new MusicTest());
 	}
 	
 	#if extLoad
@@ -129,7 +126,9 @@ class Main extends Sprite {
 		ArtEditor.instance.x = ArtEditor.instance.y = 100;
 		ArtEditor.instance.edit(Art.Hero);
 		
-		startMode(Mode.Title);
+		new Skills();
+		
+		startMode(Mode.MusicEdit);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -141,7 +140,7 @@ class Main extends Sprite {
 		
 		FORMAT = new TextFormat(AMATIC.fontName, 32, 0xFF55555F);
 		FORMAT.align = TextFormatAlign.CENTER;
-		FORMAT_SUB = new TextFormat(AMATIC.fontName, 24, 0xFF55555F);
+		FORMAT_SUB = new TextFormat(AMATIC.fontName, 26, 0xFF55555F);
 		FORMAT_SUB.align = TextFormatAlign.CENTER;
 		FORMAT_BOLD = new TextFormat(AMATIC_BOLD.fontName, 36, 0xFF55555F);
 		FORMAT_BOLD.align = TextFormatAlign.CENTER;
@@ -174,6 +173,8 @@ class Main extends Sprite {
 				addChild(ArtEditor.instance);
 			case Mode.PlayTest:
 				screen = new GameScreen();
+			case Mode.MusicEdit:
+				screen = new MusicScreen();
 			default:
 		}
 		mode = m;

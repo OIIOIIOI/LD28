@@ -47,7 +47,8 @@ class TitleScreen extends Screen {
 	override public function update () {
 		super.update();
 		if (started) {
-			bg.alpha *= 0.9;
+			//bg.alpha *= 0.9;
+			bg.alpha = 0;
 			if (bg.alpha < 0.05) {
 				Main.instance.startMode(Mode.Setup);
 			}

@@ -171,8 +171,6 @@ class ArtEditor extends Sprite {
 		
 		window = new Window(close, "MS Pain");
 		window.setContent(windowContent);
-		window.x = Std.int((Screen.WIDTH - window.width) / 2);
-		window.y = Std.int((Screen.HEIGHT - window.height) / 2);
 		addChild(window);
 	}
 	//}

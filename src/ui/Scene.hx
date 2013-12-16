@@ -89,10 +89,13 @@ class Scene extends Sprite {
 		skyLayer.addChild(Clock.instance.skySprite);
 		// Post-its
 		mainPI = new PostIt("TODO", ["-MAKE a game ", "-TEST it ", "-SUBMIT it "], 0, mainPIClickHandler);
-		mainPI.x = 20;
+		mainPI.buttons[0].setActive(false, true);
+		mainPI.x = 10;
 		mainPI.y = 80;
 		mainPI.rotation = 4;
-		codePI = new PostIt("CODE", ["-basics ", "-enemies ", "-jump "], 0, codePIClickHandler);
+		codePI = new PostIt("CODE", ["1. basics ", "2. enemies ", "3. jump "], 0, codePIClickHandler);
+		codePI.buttons[1].setActive(false, true);
+		codePI.buttons[2].setActive(false, true);
 		codePI.x = mainPI.x + 10;
 		codePI.y = mainPI.y + 150;
 		artPI = new PostIt("ART", ["-hero ", "-enemy ", "-block ", "-goal "], 0, artPIClickHandler);
@@ -108,7 +111,8 @@ class Scene extends Sprite {
 		showPI(mainPI);
 		Timer.delay(showPI.bind(codePI), 500);
 		Timer.delay(showPI.bind(artPI), 900);
-		Timer.delay(showPI.bind(musicPI), 1200);
+		//Timer.delay(showPI.bind(musicPI), 1200);
+		showPI(musicPI);
 		//
 		Clock.instance.pause(false);
 	}

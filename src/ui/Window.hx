@@ -7,6 +7,7 @@ import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import openfl.Assets;
+import screens.Screen;
 
 /**
  * ...
@@ -19,7 +20,6 @@ class Window extends Sprite {
 	public var titleLabel:UIObject;
 	var closeButton:Button;
 	var closeCallback:Void->Void;
-	//var top:Sprite;
 	
 	public function new (closeCB:Void->Void = null, title:String = "") {
 		super();
@@ -43,12 +43,8 @@ class Window extends Sprite {
 			closeButton.addEventListener(MouseEvent.CLICK, clickHandler);
 		}
 		
-		// TODO drag & drop
-		/*top = new Sprite();
-		top.graphics.beginFill(0xFF00FF, 0.5);
-		top.graphics.drawRect(0, 0, 490, 25);
-		top.graphics.endFill();
-		addChild(top);*/
+		x = Std.int((Screen.WIDTH - width) / 2) + 60 + Std.random(10);
+		y = Std.int((Screen.HEIGHT - height) / 2) + Std.random(30) - 15;
 	}
 	
 	function clickHandler (e:MouseEvent) {

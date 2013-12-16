@@ -26,8 +26,6 @@ class GameScreen extends Screen {
 		
 		window = new Window(null, "LD Prototype");
 		window.setContent(winContent);
-		window.x = Std.int((Screen.WIDTH - window.width) / 2) + 30 + Std.random(20);
-		window.y = Std.int((Screen.HEIGHT - window.height) / 2) + Std.random(30) - 15;
 		addChild(window);
 		
 		#if extLoad

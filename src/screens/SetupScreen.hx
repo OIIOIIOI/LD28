@@ -98,8 +98,6 @@ class SetupScreen extends Screen {
 		
 		window = new Window(null, "Ludum Dare - Waterfox");
 		window.setContent(winContent);
-		window.x = Std.int((Screen.WIDTH - window.width) / 2) + 30 + Std.random(20);
-		window.y = Std.int((Screen.HEIGHT - window.height) / 2) + Std.random(30) - 15;
 		addChild(window);
 		
 		//
@@ -145,10 +143,10 @@ class SetupScreen extends Screen {
 			winContent.removeChild(jamButton);
 			compoButton = jamButton = null;
 			//
-			tf.text = "My skills:";
+			tf.text = "Skills:";
 			white.y = 360 - 60;
 			
-			skills = new Skills();
+			skills = Skills.instance;
 			skills.x = 70;
 			skills.y = 170;
 			winContent.addChild(skills);
