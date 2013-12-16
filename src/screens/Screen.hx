@@ -15,9 +15,9 @@ class Screen extends Sprite {
 	public function new () {
 		super();
 		
-		graphics.beginFill(0xFF00FF, 0);
+		/*graphics.beginFill(0xFF00FF, 0.5);
 		graphics.drawRect(0, 0, WIDTH, HEIGHT);
-		graphics.endFill();
+		graphics.endFill();*/
 	}
 	
 	public function update () { }

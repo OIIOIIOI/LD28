@@ -135,9 +135,11 @@ class MusicGame extends Sprite {
 		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 		
-		trackBSC.removeEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
-		trackBSC.stop();
-		trackASC.stop();
+		if (trackBSC != null) {
+			trackBSC.removeEventListener(Event.SOUND_COMPLETE, soundCompleteHandler);
+			trackBSC.stop();
+			trackASC.stop();
+		}
 		
 		recording = false;
 		fading = false;
@@ -247,7 +249,7 @@ class MusicGame extends Sprite {
 	public static function getCorrectKey (inst:Int) {
 		// Get correct key
 		var correctKey:UInt;
-		if (Skills.instance.musicLevel > 0) {
+		if (Skills.instance.musicLevel > 1) {
 			correctKey = switch (inst) {
 				case 0:		Keyboard.J;
 				case 1:		Keyboard.K;

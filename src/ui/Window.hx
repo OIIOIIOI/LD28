@@ -16,6 +16,9 @@ import screens.Screen;
 
 class Window extends Sprite {
 	
+	public static var WIDTH:Int = 480;
+	public static var HEIGHT:Int = 360;
+	
 	var background:Bitmap;
 	public var titleLabel:UIObject;
 	var closeButton:Button;
@@ -60,7 +63,7 @@ class Window extends Sprite {
 		//
 		var m = new Sprite();
 		m.graphics.beginFill(0x00FF00);
-		m.graphics.drawRect(0, 0, 480, 360);
+		m.graphics.drawRect(0, 0, WIDTH, HEIGHT);
 		m.graphics.endFill();
 		addChild(m);
 		m.x = c.x;

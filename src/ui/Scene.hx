@@ -78,8 +78,8 @@ class Scene extends Sprite {
 		backgroundLayer.addChild(o);
 		// Screen
 		b = new Bitmap(Assets.getBitmapData("img/screen.png"));
-		b.x = 44;
-		b.y = 56;
+		b.x = 35;
+		b.y = 52;
 		backgroundLayer.addChild(b);
 		// Clock
 		new Clock();
@@ -111,8 +111,7 @@ class Scene extends Sprite {
 		showPI(mainPI);
 		Timer.delay(showPI.bind(codePI), 500);
 		Timer.delay(showPI.bind(artPI), 900);
-		//Timer.delay(showPI.bind(musicPI), 1200);
-		showPI(musicPI);
+		Timer.delay(showPI.bind(musicPI), 1200);
 		//
 		Clock.instance.pause(false);
 	}

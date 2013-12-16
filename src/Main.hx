@@ -22,6 +22,7 @@ import game.Game;
 import game.Level;
 import game.PFGame;
 import openfl.Assets;
+import screens.ArtScreen;
 import screens.GameScreen;
 import screens.MusicScreen;
 import screens.Screen;
@@ -123,8 +124,6 @@ class Main extends Sprite {
 		startData.setPixel32(3, 0, 0xFFFFFFFF);
 		
 		new ArtEditor(startData);
-		ArtEditor.instance.x = ArtEditor.instance.y = 100;
-		ArtEditor.instance.edit(Art.Hero);
 		
 		new Skills();
 		
@@ -154,11 +153,11 @@ class Main extends Sprite {
 		// Clear screen
 		scene.clearScreen();
 		// Mode specific
-		switch (mode) {
+		/*switch (mode) {
 			case Mode.ArtEdit:
 				if (contains(ArtEditor.instance))	removeChild(ArtEditor.instance);
 			default:
-		}
+		}*/
 	}
 	
 	public function startMode (m:Mode) {
@@ -171,7 +170,8 @@ class Main extends Sprite {
 			case Mode.Setup:
 				screen = new SetupScreen();
 			case Mode.ArtEdit:
-				addChild(ArtEditor.instance);
+				//addChild(ArtEditor.instance);
+				screen = new ArtScreen();
 			case Mode.PlayTest:
 				screen = new GameScreen();
 			case Mode.MusicEdit:
@@ -185,16 +185,16 @@ class Main extends Sprite {
 	public function executeAction (a:String) {
 		switch (a) {
 			case "artHero":
-				ArtEditor.instance.edit(Art.Hero);
+				ArtEditor.instance.current = Art.Hero;
 				startMode(Mode.ArtEdit);
 			case "artBlock":
-				ArtEditor.instance.edit(Art.Block);
+				ArtEditor.instance.current = Art.Block;
 				startMode(Mode.ArtEdit);
 			case "artEnemy":
-				ArtEditor.instance.edit(Art.Enemy);
+				ArtEditor.instance.current = Art.Enemy;
 				startMode(Mode.ArtEdit);
 			case "artTreasure":
-				ArtEditor.instance.edit(Art.Goal);
+				ArtEditor.instance.current = Art.Goal;
 				startMode(Mode.ArtEdit);
 			case "testGame":
 				startMode(Mode.PlayTest);
