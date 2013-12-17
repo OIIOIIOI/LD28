@@ -55,19 +55,17 @@ class Clock {
 	}
 	
 	public function update (tick:Int = 1) {
+		//tick = 12;
 		if (mode == null)	return;
 		if (!paused && timeLeft > 0) {
 			timeLeft -= tick;
-			if (timeLeft <= 0)	timeLeft = 0;
-			sprite.display(totalTime - timeLeft);
-			// TODO Correct time
-			var f = (totalTime - timeLeft) / 360;
-			var h = Std.int(f);
-			var m = Std.int((f - h) * 60);
-			while (h > 24)	h -= 24;
-			var hRatio = h / 24;
-			var mRatio = m / 60;
-			skySprite.rotation = 360 * hRatio + (360 / 24 * mRatio);
+			if (timeLeft <= 0) {
+				timeLeft = 0;
+				trace("done");
+			}
+			sprite.update(tick);
+			//
+			skySprite.rotation += tick / 24;
 		}
 	}
 	
@@ -103,18 +101,9 @@ class ClockSprite extends Sprite {
 		addChild(hoursHand);
 	}
 	
-	public function display (t:Int) {
-		var f = t / 360;
-		var h = Std.int(f);
-		var m = Std.int((f - h) * 60);
-		
-		while (h > 24)	h -= 24;
-		
-		var hRatio = h / 24;
-		var mRatio = m / 60;
-		// TODO Correct time & smooth rotation
-		hoursHand.rotation = 360 * hRatio + (360 / 24 * mRatio);
-		minutesHand.rotation = 360 * mRatio;
+	public function update (tick:Int) {
+		minutesHand.rotation += tick;
+		hoursHand.rotation += tick / 12;
 	}
 	
 }

@@ -21,14 +21,14 @@ class SoundManager {
 		cache = new Map<String, Sound>();
 	}
 	
-	public static function play (url:String) :SoundChannel {
+	public static function play (url:String, loop:Int = 0) :SoundChannel {
 		if (cache.exists(url)) {
-			return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
+			return cache.get(url).play(0, loop, new SoundTransform(GLOBAL_VOL));
 		} else {
 			var s = Assets.getSound(url);
 			if (s != null) {
 				cache.set(url, s);
-				return cache.get(url).play(0, 0, new SoundTransform(GLOBAL_VOL));
+				return cache.get(url).play(0, loop, new SoundTransform(GLOBAL_VOL));
 			}
 			return null;
 		}

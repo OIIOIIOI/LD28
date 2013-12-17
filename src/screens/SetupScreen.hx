@@ -96,7 +96,7 @@ class SetupScreen extends Screen {
 		tf3.visible = false;
 		winContent.addChild(tf3);
 		
-		window = new Window(null, "Ludum Dare - Waterfox");
+		window = new Window(null, "Ludum Dare - Interwebs Exploder");
 		window.setContent(winContent);
 		addChild(window);
 		
@@ -172,8 +172,7 @@ class SetupScreen extends Screen {
 			skills.cleanGraph();
 			tf3.visible = false;
 			//
-			//count = 10;
-			count = -1;
+			count = 10;
 			
 			white.y = 360 - 95;
 			tf3.y = white.y + 5;
@@ -208,18 +207,20 @@ class SetupScreen extends Screen {
 	}
 	
 	function countDown () {
+		var interval:Int = 1000;//1000
+		
 		if (count > 5) {
 			count--;
-			Timer.delay(countDown, 1000);
+			Timer.delay(countDown, interval);
 			tf.text = "LD starts in " + count + " seconds\nTheme: ???";
 		}
 		else if (count > 3) {
 			count--;
-			Timer.delay(countDown, 1000);
+			Timer.delay(countDown, interval);
 		}
 		else if (count > -1) {
 			count--;
-			Timer.delay(countDown, 1000);
+			Timer.delay(countDown, interval);
 			tf.visible = false;
 			b.visible = false;
 			white.visible = false;

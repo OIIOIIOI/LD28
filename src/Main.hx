@@ -65,6 +65,9 @@ class Main extends Sprite {
 	var mode:Mode;
 	var screen:Screen;
 	
+	public var ambientSound:SoundChannel;
+	public var ambientMusic:SoundChannel;
+	
 	//var playGame:PFGame;
 	
 	#if extLoad
@@ -128,13 +131,8 @@ class Main extends Sprite {
 		
 		new ArtEditor();
 		new Skills();
-		//Skills.instance.codeLevel = 3;
-		//Skills.instance.artLevel = 3;
-		//Skills.instance.musicLevel = 3;
 		
-		//SoundManager.play("snd/ambient.mp3");
-		
-		startMode(Mode.MusicEdit);
+		startMode(Mode.Title);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}
@@ -169,14 +167,20 @@ class Main extends Sprite {
 				screen = new TitleScreen();
 			case Mode.Setup:
 				screen = new SetupScreen();
+				ambientSound = SoundManager.play("snd/ambient.mp3", 999);
+				ambientMusic = SoundManager.play("snd/ambientmusic.mp3", 999);
 			case Mode.ArtEdit:
 				screen = new ArtScreen();
+				recordMode(false);
 			case Mode.PlayTest:
 				screen = new GameScreen();
+				recordMode();
 			case Mode.MusicEdit:
 				screen = new MusicScreen();
+				recordMode();
 			case Mode.CodeEdit:
 				screen = new CodeScreen();
+				recordMode(false);
 			default:
 		}
 		mode = m;
@@ -229,6 +233,16 @@ class Main extends Sprite {
 	function update (e:Event) {
 		// Scene update
 		scene.update();
+	}
+	
+	public function recordMode (record:Bool = true) {
+		if (record) {
+			ambientMusic.soundTransform = new SoundTransform(0);
+			ambientSound.soundTransform = new SoundTransform(0.2);
+		} else {
+			ambientMusic.soundTransform = new SoundTransform(SoundManager.GLOBAL_VOL);
+			ambientSound.soundTransform = new SoundTransform(SoundManager.GLOBAL_VOL);
+		}
 	}
 	
 }
